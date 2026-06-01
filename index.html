@@ -680,6 +680,11 @@ function applyPanchayatSheet(rows){
   var col=stageCols(headers); var any=false; STAGE_KEYS.forEach(function(k){ if(col[k]!=null) any=true; });
   if(!any) return 0;
   function gv(r,c){ if(c==null) return ""; var i=headers.indexOf(c); return i<0?"":r[i]; }
+  /* The uploaded coverage sheet is authoritative: reset every panchayat to
+     all-false first, so panchayats absent from the sheet show as not-started
+     instead of retaining stale sample values. */
+  var blank={}; STAGE_KEYS.forEach(function(k){ blank[k]=false; });
+  PANCHAYAT_GEO.features.forEach(function(f){ STATUS_NORM[normName(f.properties.name)]=cumulative(blank); });
   var n=0;
   hb.body.forEach(function(row){ if(!row) return; var vp=String(gv(row,cVP)||"").trim(); if(!vp) return;
     var v={}; STAGE_KEYS.forEach(function(k){ v[k]= col[k]!=null ? truthy(gv(row,col[k])) : false; });
@@ -766,7 +771,7 @@ function ingestText(t,srcLabel){
   var sites=parseRows(rows);
   var now=new Date().toLocaleTimeString();
   if(sites.length){ setData(sites, (srcLabel||"Loaded")+": <b>"+sites.length+"</b> RVM locations \u00b7 "+now+(autoUrl?" \u00b7 auto-refresh on":"")); return true; }
-  if(pUpd>0){ renderAll(); statusEl.innerHTML=(srcLabel||"Loaded")+": <b>"+pUpd+"</b> panchayats updated \u00b7 "+now+(autoUrl?" \u00b7 auto-refresh on":""); return true; }
+  if(pUpd>0){ SITES=buildSampleSites(); renderAll(); statusEl.innerHTML=(srcLabel||"Loaded")+": <b>"+pUpd+"</b> panchayats updated \u00b7 "+now+(autoUrl?" \u00b7 auto-refresh on":""); return true; }
   throw new Error("no usable rows");
 }
 function loadFromUrl(url){
@@ -833,7 +838,7 @@ function handleFile(file){
       wb.SheetNames.forEach(function(sn){ if(done) return; var ws=wb.Sheets[sn]; var rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:""});
         var p=applyPanchayatSheet(rows), s=parseRows(rows);
         if(s.length){ setData(s,"Loaded <b>"+file.name+"</b> ("+sn+") \u00b7 "+s.length+" RVM locations"); done=true; }
-        else if(p>0){ renderAll(); statusEl.innerHTML="Loaded <b>"+file.name+"</b> ("+sn+") \u00b7 "+p+" panchayats updated"; done=true; }
+        else if(p>0){ SITES=buildSampleSites(); renderAll(); statusEl.innerHTML="Loaded <b>"+file.name+"</b> ("+sn+") \u00b7 "+p+" panchayats updated"; done=true; }
       });
       if(!done) statusEl.innerHTML="No usable rows in <b>"+file.name+"</b>.";
     }; reader.readAsArrayBuffer(file); }
