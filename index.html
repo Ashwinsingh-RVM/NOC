@@ -658,11 +658,27 @@ function csvToRows(text){
   });
 }
 function findHeaderRow(rows){
-  for(var i=0;i<Math.min(rows.length,15);i++){
-    var j=(rows[i]||[]).map(function(c){return String(c||"").toLowerCase();}).join("|");
-    if(/vp_name|vp name|panchayat|taluka|\bblock\b|\blat\b|\blng\b|\bnoc\b/.test(j)) return i;
+  /* A real header row contains an identity column (VP_Name / Panchayat / Point_Name)
+     AND at least one more known column. Score each row; pick the best.
+     This avoids mistaking a title row like "Goa DRS ... NOC ..." for the header. */
+  var idCues=["vp_name","vp name","panchayat","point_name","point name","site name","gram"];
+  var otherCues=["block","taluka","district","lat","lng","lon","long","noc","agreement","shed","civil","electric","machine","stage","status","name"];
+  var bestRow=-1, bestScore=0;
+  for(var i=0;i<Math.min(rows.length,20);i++){
+    var cells=(rows[i]||[]).map(function(c){return String(c||"").trim().toLowerCase();});
+    var nonEmpty=cells.filter(function(c){return c;}).length;
+    if(nonEmpty<2) continue;
+    var hasId=cells.some(function(c){ return idCues.some(function(q){ return c===q || c.indexOf(q)>=0; }); });
+    var others=0; cells.forEach(function(c){ if(otherCues.some(function(q){ return c===q || (c.length<=22 && c.indexOf(q)>=0); })) others++; });
+    /* short cells only: a header cell is a label, not a sentence */
+    var shortCells=cells.filter(function(c){ return c && c.length<=22; }).length;
+    var score=(hasId?5:0)+others+ (shortCells===nonEmpty?2:0);
+    /* reject sentence-like rows (any very long cell) */
+    var hasLongCell=cells.some(function(c){ return c.length>40; });
+    if(hasLongCell) score-=6;
+    if(hasId && others>=1 && score>bestScore){ bestScore=score; bestRow=i; }
   }
-  return 0;
+  return bestRow>=0?bestRow:0;
 }
 function headerAndBody(rows){ var hi=findHeaderRow(rows); return {headers:rows[hi]||[], body:rows.slice(hi+1)}; }
 function stageCols(headers){
