@@ -232,6 +232,7 @@ h1.title{font-family:"Orbitron",sans-serif;font-weight:700;font-size:18px;letter
         <div class="drow">
           <button class="btn primary" id="loadSheet">Load Sheet</button>
           <button class="btn" id="autoBtn">Auto: Off</button>
+          <button class="btn" id="detachBtn">Detach</button>
         </div>
         <div class="drop" id="drop">Drop CSV / XLSX here, or click to pick a file</div>
         <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" style="display:none"/>
@@ -753,6 +754,10 @@ function gsheetCsvUrls(url){
   if(!out.length) out.push(url);
   return out.filter(function(v,i,a){ return a.indexOf(v)===i; });
 }
+var SHEET_KEY="goa_drs_sheet_url_v6";
+function saveSheetUrl(u){ try{ if(u) localStorage.setItem(SHEET_KEY,u); }catch(e){} }
+function clearSheetUrl(){ try{ localStorage.removeItem(SHEET_KEY); }catch(e){} }
+function readSheetUrl(){ try{ return localStorage.getItem(SHEET_KEY)||""; }catch(e){ return ""; } }
 var statusEl=document.getElementById("status");
 function ingestText(t,srcLabel){
   if(/^\s*<(!doctype|html)/i.test(t)) throw new Error("got HTML not CSV");
@@ -772,7 +777,7 @@ function loadFromUrl(url){
     if(i>=cands.length){ statusEl.innerHTML="Couldn\u2019t fetch that link. In Google Sheets: <b>File \u25b8 Share \u25b8 Publish to web \u25b8 CSV</b>, then paste that link here."; return; }
     var u=cands[i++];
     fetch(u).then(function(r){ if(!r.ok) throw new Error(r.status); return r.text(); })
-      .then(function(t){ try{ ingestText(t,"Live"); }catch(e){ tryNext(); } })
+      .then(function(t){ try{ ingestText(t,"Live"); saveSheetUrl(url); }catch(e){ tryNext(); } })
       .catch(function(){ tryNext(); });
   })();
 }
@@ -806,6 +811,13 @@ document.getElementById("autoBtn").addEventListener("click",function(){
   if(autoTimer){ clearInterval(autoTimer); autoTimer=null; autoUrl=null; btn.textContent="Auto: Off"; return; }
   if(!u){ statusEl.innerHTML="Enter a sheet URL first, then enable auto-refresh."; return; }
   autoUrl=u; loadFromUrl(u); autoTimer=setInterval(function(){ loadFromUrl(autoUrl); },30000); btn.textContent="Auto: 30s";
+});
+document.getElementById("detachBtn").addEventListener("click",function(){
+  clearSheetUrl();
+  if(autoTimer){ clearInterval(autoTimer); autoTimer=null; autoUrl=null; document.getElementById("autoBtn").textContent="Auto: Off"; }
+  document.getElementById("sheetUrl").value="";
+  SITES=buildSampleSites();
+  setData(SITES, 'Detached. Showing <b>sample data</b> again. Saved link cleared.');
 });
 var drop=document.getElementById("drop"), fileInput=document.getElementById("fileInput");
 drop.addEventListener("click",function(){ fileInput.click(); });
@@ -844,7 +856,14 @@ function wireCollapsers(){
 /* ===================== Boot ===================== */
 wireCollapsers();
 SITES=buildSampleSites();
-setData(SITES, 'Showing <b>sample data</b> (6-stage). Unlock Data Source to load your live Google Sheet.');
+var savedUrl=readSheetUrl();
+if(savedUrl){
+  var inp=document.getElementById("sheetUrl"); if(inp) inp.value=savedUrl;
+  setData(SITES, 'Restoring saved sheet\u2026');
+  loadFromUrl(savedUrl);
+} else {
+  setData(SITES, 'Showing <b>sample data</b> (6-stage). Unlock Data Source to load your live Google Sheet.');
+}
 setTimeout(function(){ map.invalidateSize(); },250);
 window.addEventListener("resize",function(){ map.invalidateSize(); });
 
