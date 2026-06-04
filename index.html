@@ -488,6 +488,43 @@ function talUnitStat(taluka,key,purpose){ var t=0,y=0;
     if(key==="total") y++; else if(key==="machine"||key==="installed"){ if(u.machine||u.installed) y++; } else if(u[key]) y++; });
   return {covered:y,total:t,pct:t?Math.round(y/t*100):0}; }
 
+/* ===================== Area coverage (geographic, from panchayat polygons) ===================== */
+/* Spherical polygon area. Coordinates are GeoJSON [lng,lat]; returns m². */
+function _ringAreaM2(ring){
+  var n=ring.length; if(n<3) return 0; var R=6378137, a=0, rad=Math.PI/180;
+  for(var i=0;i<n;i++){ var p1=ring[i], p2=ring[(i+1)%n];
+    a += (p2[0]-p1[0])*rad * (2 + Math.sin(p1[1]*rad) + Math.sin(p2[1]*rad)); }
+  return Math.abs(a*R*R/2);
+}
+function _geomAreaKm2(geom){
+  if(!geom) return 0; var t=geom.type, c=geom.coordinates, km=0;
+  function poly(rings){ if(!rings.length) return 0; var out=_ringAreaM2(rings[0]); for(var h=1;h<rings.length;h++) out-=_ringAreaM2(rings[h]); return out; }
+  if(t==="Polygon") km=poly(c);
+  else if(t==="MultiPolygon"){ c.forEach(function(p){ km+=poly(p); }); }
+  return km/1e6;
+}
+var PANCH_AREA={}, PANCH_TALUKA={}, TOTAL_PANCH_AREA=0;
+(function buildPanchAreas(){
+  (PANCHAYAT_GEO.features||[]).forEach(function(f){
+    var km=_geomAreaKm2(f.geometry);
+    PANCH_AREA[f.properties.name]=km; PANCH_TALUKA[f.properties.name]=f.properties.taluka||"";
+    TOTAL_PANCH_AREA+=km;
+  });
+})();
+/* key: noc|agreement ; taluka optional. Coverage measured over mapped panchayat polygons. */
+function authAreaStat(key, taluka){
+  var cov=0, tot=0;
+  (PANCHAYAT_GEO.features||[]).forEach(function(f){
+    var nm=f.properties.name; if(taluka && PANCH_TALUKA[nm]!==taluka) return;
+    var km=PANCH_AREA[nm]||0; tot+=km;
+    var a=authOf(nm); if(!a) return;
+    var on = key==="noc" ? (nocApplies(a)? !!a.noc : !!a.agreement) : !!a.agreement;
+    if(on) cov+=km;
+  });
+  return {coveredKm:cov, totalKm:tot, pct: tot? Math.round(cov/tot*100):0};
+}
+function fmtKm(x){ return Math.round(x).toLocaleString(); }
+
 /* ===================== State ===================== */
 var viewMode    = "authority";   // "authority" | "units"
 var authStage   = "noc";          // shaded stage in authority view (noc|agreement)
@@ -533,6 +570,7 @@ talukaLayer.bringToBack(); districtLayer.bringToFront();
 function openTalukaPopup(name){
   var lyr=talLayerByName[name]; if(!lyr) return;
   var n=talAuthStat(name,"noc"), a=talAuthStat(name,"agreement");
+  var na=authAreaStat("noc",name), aa=authAreaStat("agreement",name);
   var rvm=talUnitStat(name,"total","RVM"), rc=talUnitStat(name,"total","RC");
   var build=RVM_BUILD.map(function(k){ var c=talUnitStat(name,k,"RVM");
     return '<div style="display:flex;gap:6px;font-family:IBM Plex Mono,monospace;font-size:10px;margin:2px 0"><span style="width:8px;height:8px;border-radius:2px;background:'+STAGE_COLOR[k]+'"></span>'+STAGE_LABEL[k]+'<b style="margin-left:auto">'+c.covered+'/'+rvm.covered+'</b></div>'; }).join("");
@@ -541,6 +579,9 @@ function openTalukaPopup(name){
     '<div class="popsub">Paperwork</div>'+
     '<div style="display:flex;gap:6px;font-family:IBM Plex Mono,monospace;font-size:10px;margin:2px 0"><span style="width:8px;height:8px;border-radius:2px;background:'+STAGE_COLOR.noc+'"></span>NOC<b style="margin-left:auto">'+n.covered+'/'+n.total+'</b></div>'+
     '<div style="display:flex;gap:6px;font-family:IBM Plex Mono,monospace;font-size:10px;margin:2px 0"><span style="width:8px;height:8px;border-radius:2px;background:'+STAGE_COLOR.agreement+'"></span>Agreement<b style="margin-left:auto">'+a.covered+'/'+a.total+'</b></div>'+
+    '<div class="popsub">Area coverage</div>'+
+    '<div style="display:flex;gap:6px;font-family:IBM Plex Mono,monospace;font-size:10px;margin:2px 0"><span style="width:8px;height:8px;border-radius:2px;background:'+STAGE_COLOR.noc+'"></span>NOC area<b style="margin-left:auto">'+na.pct+'% \u00b7 '+fmtKm(na.coveredKm)+'/'+fmtKm(na.totalKm)+' km\u00b2</b></div>'+
+    '<div style="display:flex;gap:6px;font-family:IBM Plex Mono,monospace;font-size:10px;margin:2px 0"><span style="width:8px;height:8px;border-radius:2px;background:'+STAGE_COLOR.agreement+'"></span>Agreement area<b style="margin-left:auto">'+aa.pct+'% \u00b7 '+fmtKm(aa.coveredKm)+'/'+fmtKm(aa.totalKm)+' km\u00b2</b></div>'+
     '<div class="popsub">RVM build</div>'+build+
     '',
     {maxWidth:250}).openPopup();
@@ -658,6 +699,13 @@ function renderDashboard(){
   html+=statCard("NOC received", noc.covered+" / "+noc.total, STAGE_COLOR.noc,"kp");
   html+=statCard("Agreement signed", agr.covered+" / "+agr.total, STAGE_COLOR.agreement,"kp");
   html+='</div>';
+  // --- Area coverage (geographic, from panchayat polygons) ---
+  var nocA=authAreaStat("noc"), agrA=authAreaStat("agreement");
+  html+='<div class="dsec">Area coverage <span style="text-transform:none;letter-spacing:0;color:var(--faint)">\u00b7 share of mapped panchayat area</span></div><div class="dashgrid">';
+  html+=statCard("NOC area \u00b7 "+fmtKm(nocA.coveredKm)+"/"+fmtKm(nocA.totalKm)+" km\u00b2", nocA.pct+"%", STAGE_COLOR.noc,"kp");
+  html+=statCard("Agreement area \u00b7 "+fmtKm(agrA.coveredKm)+"/"+fmtKm(agrA.totalKm)+" km\u00b2", agrA.pct+"%", STAGE_COLOR.agreement,"kp");
+  html+=statCard("Mapped GP area", fmtKm(TOTAL_PANCH_AREA)+" km\u00b2", "#1f2733","kp");
+  html+='</div>';
   // per-type breakdown (auto)
   html+='<div class="typewrap">';
   authTypes().forEach(function(t){
@@ -717,9 +765,10 @@ function renderKpis(){
   var totalEntities = AUTH.length;
   var totalUnits    = UNITS.length;
   var noc=authStat("noc"), agr=authStat("agreement");
+  var nocA=authAreaStat("noc"), agrA=authAreaStat("agreement");
   document.getElementById("kpiSites").textContent=totalEntities;
   document.getElementById("kpiLive").textContent=totalUnits;
-  document.getElementById("kpiNote").innerHTML="From sheet: <b>"+totalEntities+"</b> entities, <b>"+totalUnits+"</b> RVMs planned. NOC <b>"+noc.covered+"/"+noc.total+"</b>, Agreement <b>"+agr.covered+"/"+agr.total+"</b>.";
+  document.getElementById("kpiNote").innerHTML="From sheet: <b>"+totalEntities+"</b> entities, <b>"+totalUnits+"</b> RVMs planned. NOC <b>"+noc.covered+"/"+noc.total+"</b>, Agreement <b>"+agr.covered+"/"+agr.total+"</b>. Area covered: NOC <b>"+nocA.pct+"%</b>, Agreement <b>"+agrA.pct+"%</b> of mapped panchayat area.";
 }
 
 function renderTalukaDetail(){
