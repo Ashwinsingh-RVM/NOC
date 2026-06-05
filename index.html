@@ -361,14 +361,14 @@ h1.title{font-family:"Orbitron",sans-serif;font-weight:700;font-size:18px;letter
       </div>
       <div id="dsPanel" class="dsrc" style="display:none">
         <div class="dsadmin">Signed in as <b>admin</b> <button class="lockbtn" id="lockBtn">Lock</button></div>
-        <div class="tablabel">Single tracker sheet <span>one sheet with paperwork + RVM units together</span></div>
-        <input id="sheetUrl" placeholder="Published CSV URL of your single sheet…"/>
+        <div class="tablabel">Tracker sheet <span>one Google Sheet with an Authorities tab + a Units tab</span></div>
+        <input id="sheetUrl" placeholder="Paste your Google Sheet link (share: anyone with link can view)…"/>
         <button class="btn primary" id="loadSheet">Load sheet</button>
         <div class="drow" style="margin-top:12px"><button class="btn" id="autoBtn">Auto: Off</button><button class="btn" id="detachBtn">Detach</button></div>
-        <div class="drop" id="drop">Or drop your single CSV / XLSX here</div>
+        <div class="drop" id="drop">Or drop your CSV / XLSX (both tabs) here</div>
         <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" style="display:none"/>
         <div class="status" id="status"></div>
-        <div class="cols"><b>One sheet, these columns</b> (order/extra columns don't matter): Authority_Name · Type (Panchayat / Municipality / CCP / Private) · Taluka · NOC · Agreement · Unit_ID · Lat · Lng · Shed · Civil · Electrical · Machine · CCTV.<br/>One row per RVM; repeat the Authority_Name for each machine. A body with no RVM yet: fill its row and leave Unit_ID/Lat/Lng blank. NOC/Agreement/build columns accept Yes/No (or TRUE/1/\u2713). Private \u2192 leave NOC blank. Lat/Lng optional \u2014 blank rows snap to the body's mapped area.</div>
+        <div class="cols"><b>One sheet, two tabs.</b> Both are read automatically from the single link.<br/><b>Authorities</b> tab (one row per body): Authority_Name · Type (Panchayat / Municipality / CCP / Private) · Taluka · NOC · Agreement. Private \u2192 leave NOC blank.<br/><b>Units</b> tab (one row per RVM \u2014 add as many per body as you like): Unit_ID · Authority_Name · Lat · Lng · Shed · Civil · Electrical · Machine · CCTV. Build stages are cumulative; Yes/No (or TRUE/1/\u2713). Lat/Lng optional \u2014 blank rows snap to the body's mapped area. Tab order/extra columns don't matter.</div>
       </div>
     </div>
   </aside>
@@ -453,7 +453,7 @@ try{ map.fitBounds(districtLayer.getBounds().pad(0.04)); }catch(e){}
      - RC: single state "Installed" (inside a shop, no civil works).
    Everything is data-driven: new authority types or rows appear automatically.
 */
-var STAGE_COLOR = {noc:"#0a6f64", agreement:"#8b5cf6", shed:"#f59e0b", civil:"#0ea5e9", electrical:"#eab308", machine:"#16a34a", cctv:"#db2777", installed:"#16a34a", rc:"#ec4899"};
+var STAGE_COLOR = {noc:"#15803d", agreement:"#0d9488", shed:"#f59e0b", civil:"#0ea5e9", electrical:"#eab308", machine:"#16a34a", cctv:"#db2777", installed:"#16a34a", rc:"#ec4899"};
 var STAGE_LABEL = {noc:"NOC received", agreement:"Agreement signed", shed:"Shed ready", civil:"Civil work done", electrical:"Electrical work done", machine:"Machine installed", cctv:"CCTV installed", installed:"Installed"};
 var RVM_BUILD   = ["shed","civil","electrical","machine","cctv"];
 var TYPE_COLOR  = {Panchayat:"#0d9488", Municipality:"#6366f1", CCP:"#f59e0b", Private:"#ec4899"};
@@ -625,9 +625,9 @@ var autoTimer=null, autoUrl=null;
 /* ===================== Map: taluka blocks ===================== */
 var talLayerByName={};
 function talBaseStyle(name){
-  // When a panchayat stage (NOC/Agreement) is selected, grey-out the blocks so the
-  // coloured NOC/Agreement panchayat shading reads clearly on top.
-  if(viewMode==="authority" && authStage){
+  // When a coverage stage (NOC/Agreement) is selected — in either view — grey-out the blocks
+  // so the coloured NOC/Agreement shading reads clearly on top.
+  if((viewMode==="authority" && authStage) || (viewMode==="units" && (unitsCov.noc||unitsCov.agreement))){
     return {color:"#cfd3d9", weight:1.0, fillColor:"#d4d8de", fillOpacity:0.35, opacity:0.85};
   }
   return {color:"#3a424e", weight:1.4, fillColor:(TAL_COLORS[name]||"#bbb"),
@@ -693,11 +693,12 @@ function panchStyle(feature){
     if(fill){ return {color:"#0a0d13", weight:1.5, fillColor:fill, fillOpacity:0.80, opacity:1.0}; }
     return {color:"#0a0d13", weight:1.4, fillColor:"#ffffff", fillOpacity:0.0, opacity:1.0};
   }
-  if(viewMode==="units"){          // Collection Points: NOC/Agreement shade like the coverage view
+  if(viewMode==="units" && (unitsCov.noc||unitsCov.agreement)){   // coverage overlay: green covered, grey the rest
     var f2=null;
     if(unitsCov.agreement && agrOn) f2=STAGE_COLOR.agreement;
     else if(unitsCov.noc && nocOn) f2=STAGE_COLOR.noc;
-    if(f2) return {color:"#0a0d13", weight:1.5, fillColor:f2, fillOpacity:0.72, opacity:1.0};
+    if(f2) return {color:"#0a0d13", weight:1.4, fillColor:f2, fillOpacity:0.85, opacity:1.0};
+    return {color:"#9aa1ab", weight:1.0, fillColor:"#c7ccd3", fillOpacity:0.5, opacity:0.9};
   }
   return {color:"#0a0d13", weight:1.4, fillColor:"#ffffff", fillOpacity:0.0, opacity:1.0};
 }
@@ -736,11 +737,12 @@ function muniStyle(feature){
     if(fill) return {color:"#0a0d13", weight:1.7, fillColor:fill, fillOpacity:0.82, opacity:1.0};
     return {color:"#0a0d13", weight:1.6, fillColor:"#ffffff", fillOpacity:0.0, opacity:1.0};
   }
-  if(viewMode==="units"){
+  if(viewMode==="units" && (unitsCov.noc||unitsCov.agreement)){
     var f2=null;
     if(unitsCov.agreement && agrOn) f2=STAGE_COLOR.agreement;
     else if(unitsCov.noc && nocOn) f2=STAGE_COLOR.noc;
-    if(f2) return {color:"#0a0d13", weight:1.7, fillColor:f2, fillOpacity:0.74, opacity:1.0};
+    if(f2) return {color:"#0a0d13", weight:1.6, fillColor:f2, fillOpacity:0.86, opacity:1.0};
+    return {color:"#9aa1ab", weight:1.1, fillColor:"#c7ccd3", fillOpacity:0.5, opacity:0.9};
   }
   return {color:"#0a0d13", weight:1.6, fillColor:"#ffffff", fillOpacity:0.0, opacity:1.0};
 }
@@ -1227,6 +1229,61 @@ function loadOneUrl(url,onDone){ var cands=gsheetCsvUrls(url); if(!cands.length)
       .catch(function(){ tryNext(); }); })();
 }
 
+/* Ingest a whole workbook (all tabs). Authorities/Combined applied before Units so unit
+   rows can inherit type/taluka/coords from their authority. Returns true if anything loaded. */
+function ingestWorkbook(wb, label){
+  var authRows=null, unitRows=null, combinedRows=null;
+  (wb.SheetNames||[]).forEach(function(sn){
+    var rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,defval:""});
+    var k=classify(headerAndBody(rows).headers);
+    if(k==="combined" && !combinedRows) combinedRows=rows;
+    else if(k==="authority" && !authRows) authRows=rows;
+    else if(k==="units" && !unitRows) unitRows=rows;
+  });
+  var la=0, lu=0;
+  if(authRows){ la=applyAuthSheet(authRows)||0; }
+  if(unitRows){ lu=applyUnitSheet(unitRows)||0; }
+  if(!authRows && !unitRows && combinedRows){ var r=applyCombinedSheet(combinedRows); la=r.a; lu=r.u; }
+  if(la||lu){ renderAll(); statusEl.innerHTML=(label||"Loaded")+" \u00b7 <b>"+la+"</b> authorities \u00b7 <b>"+lu+"</b> RVM \u00b7 "+new Date().toLocaleTimeString()+(autoUrl?" \u00b7 auto on":""); return true; }
+  return false;
+}
+function extractSheetId(u){ var m=String(u||"").match(/\/spreadsheets\/d\/(?:e\/)?([a-zA-Z0-9-_]{20,})/); return m?m[1]:null; }
+
+/* Load one Google Sheet that may have several tabs (Authorities + Units). Order of attempts:
+   1) the whole workbook via export=xlsx (one request, every tab),
+   2) named tabs via gviz CSV (Authorities + Units), for published-only sheets,
+   3) a single CSV (combined or one tab) as the last resort. */
+function loadSheetUrl(url,onDone){
+  var id=extractSheetId(url);
+  if(!id){ loadOneUrl(url,onDone); return; }
+  fetch("https://docs.google.com/spreadsheets/d/"+id+"/export?format=xlsx")
+    .then(function(r){ if(!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
+    .then(function(buf){ var wb=XLSX.read(new Uint8Array(buf),{type:"array"}); if(ingestWorkbook(wb,"Live")){ if(onDone) onDone(true); } else throw new Error("no tabs"); })
+    .catch(function(){ loadCsvTabs(url,id,onDone); });
+}
+function loadCsvTabs(url,id,onDone){
+  var authNames=["Authorities","Authority","NOC","NOC-Agreement","Paperwork","Bodies","Panchayats"];
+  var unitNames=["Units","Unit","RVM","RVMs","Machines","Locations","Collection Points"];
+  function csvFor(nm){ return "https://docs.google.com/spreadsheets/d/"+id+"/gviz/tq?tqx=out:csv&sheet="+encodeURIComponent(nm); }
+  function tryNames(names, want, done){
+    var i=0; (function next(){ if(i>=names.length){ done(null); return; } var u=csvFor(names[i++]);
+      fetch(u).then(function(r){ if(!r.ok) throw 0; return r.text(); }).then(function(t){
+        if(/^\s*<(!doctype|html)/i.test(t)) throw 0;
+        var rows=csvToRows(t), k=classify(headerAndBody(rows).headers);
+        if(k===want || k==="combined") done({rows:rows,kind:k}); else next();
+      }).catch(function(){ next(); }); })();
+  }
+  tryNames(authNames,"authority",function(A){
+    tryNames(unitNames,"units",function(U){
+      var la=0,lu=0;
+      if(A){ if(A.kind==="combined"){ var rc=applyCombinedSheet(A.rows); la=rc.a; lu=rc.u; } else la=applyAuthSheet(A.rows)||0; }
+      if(U){ lu=applyUnitSheet(U.rows)||lu; }
+      if(la||lu){ renderAll(); statusEl.innerHTML="Live \u00b7 <b>"+la+"</b> authorities \u00b7 <b>"+lu+"</b> RVM \u00b7 "+new Date().toLocaleTimeString()+(autoUrl?" \u00b7 auto on":""); if(onDone) onDone(true); }
+      else loadOneUrl(url,onDone);
+    });
+  });
+}
+
 /* ===================== Admin gate ===================== */
 var ADMIN_USER="admin", ADMIN_PASS="Recykal2024";
 document.getElementById("loginBtn").addEventListener("click",function(){
@@ -1237,12 +1294,12 @@ document.getElementById("loginBtn").addEventListener("click",function(){
 document.getElementById("adminPass").addEventListener("keydown",function(e){ if(e.key==="Enter") document.getElementById("loginBtn").click(); });
 document.getElementById("lockBtn").addEventListener("click",function(){ document.getElementById("dsPanel").style.display="none"; document.getElementById("dsLogin").style.display="block"; document.getElementById("adminPass").value=""; });
 
-document.getElementById("loadSheet").addEventListener("click",function(){ var u=document.getElementById("sheetUrl").value.trim(); if(!u) return; statusEl.innerHTML="Fetching sheet\u2026"; loadOneUrl(u,function(ok){ if(ok) lsSet(KEY_SHEET,u); else statusEl.innerHTML="Couldn\u2019t load that sheet. Make sure it\u2019s published as CSV and has the tracker columns."; }); });
+document.getElementById("loadSheet").addEventListener("click",function(){ var u=document.getElementById("sheetUrl").value.trim(); if(!u) return; statusEl.innerHTML="Fetching sheet\u2026"; loadSheetUrl(u,function(ok){ if(ok) lsSet(KEY_SHEET,u); else statusEl.innerHTML="Couldn\u2019t load that sheet. Share it (anyone with link can view) or publish it, with an Authorities tab and a Units tab."; }); });
 document.getElementById("autoBtn").addEventListener("click",function(){ var btn=this;
   if(autoTimer){ clearInterval(autoTimer); autoTimer=null; autoUrl=null; btn.textContent="Auto: Off"; return; }
   var u=document.getElementById("sheetUrl").value.trim();
   if(!u){ statusEl.innerHTML="Enter the sheet URL first."; return; }
-  function refresh(){ loadOneUrl(u,function(){}); }
+  function refresh(){ loadSheetUrl(u,function(){}); }
   autoUrl=u; refresh(); autoTimer=setInterval(refresh,30000); btn.textContent="Auto: 30s"; });
 document.getElementById("detachBtn").addEventListener("click",function(){ lsDel(KEY_SHEET);
   if(autoTimer){ clearInterval(autoTimer); autoTimer=null; autoUrl=null; document.getElementById("autoBtn").textContent="Auto: Off"; }
@@ -1260,12 +1317,8 @@ drop.addEventListener("drop",function(e){ if(e.dataTransfer.files.length) handle
 fileInput.addEventListener("change",function(e){ if(e.target.files.length) handleFile(e.target.files[0]); });
 function handleFile(file){ var nm=file.name.toLowerCase(), reader=new FileReader();
   if(nm.endsWith(".csv")){ reader.onload=function(ev){ try{ ingestText(ev.target.result,"Loaded <b>"+file.name+"</b>"); }catch(e){ statusEl.innerHTML="No usable rows in <b>"+file.name+"</b>."; } }; reader.readAsText(file); }
-  else { reader.onload=function(ev){ var wb=XLSX.read(new Uint8Array(ev.target.result),{type:"array"}); var la=0,lu=0;
-      wb.SheetNames.forEach(function(sn){ var rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,defval:""}); var kind=classify(headerAndBody(rows).headers);
-        if(kind==="combined"){ var r=applyCombinedSheet(rows); if(r.a>0){ la=r.a; lu=r.u; } }
-        else if(kind==="units"){ var n=applyUnitSheet(rows); if(n>0) lu=n; } else if(kind==="authority"){ var p=applyAuthSheet(rows); if(p>0) la=p; } });
-      if(la||lu){ renderAll(); statusEl.innerHTML="Loaded <b>"+file.name+"</b> \u00b7 "+(la?la+" authorities":"")+(la&&lu?" \u00b7 ":"")+(lu?lu+" units":""); }
-      else statusEl.innerHTML="No usable rows in <b>"+file.name+"</b>.";
+  else { reader.onload=function(ev){ var wb=XLSX.read(new Uint8Array(ev.target.result),{type:"array"});
+      if(!ingestWorkbook(wb,"Loaded <b>"+file.name+"</b>")) statusEl.innerHTML="No usable tabs in <b>"+file.name+"</b>.";
     }; reader.readAsArrayBuffer(file); }
 }
 
@@ -1280,8 +1333,8 @@ wireCollapsers();
 (function boot(){
   var u=lsGet(KEY_SHEET);
   var inp=document.getElementById("sheetUrl"); if(inp) inp.value=u;
-  if(u){ statusEl.innerHTML="Restoring saved sheet\u2026"; loadOneUrl(u,function(ok){ renderAll(); if(!ok) statusEl.innerHTML="Saved sheet couldn\u2019t be reached \u2014 showing <b>sample data</b>."; }); }
-  else { renderAll(); statusEl.innerHTML='Showing <b>sample data</b> ('+AUTH.length+' authorities \u00b7 '+UNITS.length+' units). Unlock Data Source to load your single sheet.'; }
+  if(u){ statusEl.innerHTML="Restoring saved sheet\u2026"; loadSheetUrl(u,function(ok){ renderAll(); if(!ok) statusEl.innerHTML="Saved sheet couldn\u2019t be reached \u2014 showing <b>sample data</b>."; }); }
+  else { renderAll(); statusEl.innerHTML='Showing <b>sample data</b> ('+AUTH.length+' authorities \u00b7 '+UNITS.length+' units). Unlock Data Source to load your sheet.'; }
 })();
 setTimeout(function(){ map.invalidateSize(); },250);
 window.addEventListener("resize",function(){ map.invalidateSize(); });
