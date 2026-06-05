@@ -869,9 +869,17 @@ function renderDashboard(){
       '<span class="tnums">NOC '+nocTxt+' \u00b7 Agr '+a.covered+'/'+a.total+'</span></div>';
   });
   html+='</div>';
-  // --- Units by purpose (auto) ---
-  
-  el.innerHTML=html;
+  // --- RVM build progress (cumulative completed; visible in both views) ---
+  var totU=UNITS.length;
+  html+='<div class="dsec">RVM build progress <span style="text-transform:none;letter-spacing:0;color:var(--faint)">\u00b7 '+totU+' RVMs</span></div><div class="typewrap">';
+  [["shed","Shed"],["civil","Civil work"],["electrical","Electrical"],["machine","Machine installed"],["cctv","CCTV installed"]].forEach(function(s){
+    var done=UNITS.filter(function(u){ return !!u[s[0]]; }).length;
+    var pct=totU?Math.round(done/totU*100):0;
+    html+='<div class="typerow"><span class="tdot" style="background:'+STAGE_COLOR[s[0]]+'"></span>'+
+      '<span class="tname2">'+s[1]+'</span>'+
+      '<span class="tnums">'+done+' / '+totU+' \u00b7 '+pct+'%</span></div>';
+  });
+  html+='</div>';
 }
 
 function renderStageLayers(){
@@ -901,13 +909,14 @@ function renderStageLayers(){
     var stages=[["awaiting","Awaiting build","#94a3b8"],["shed","Shed",STAGE_COLOR.shed],["civil","Civil work",STAGE_COLOR.civil],["electrical","Electrical",STAGE_COLOR.electrical],["machine","Machine installed",STAGE_COLOR.machine],["cctv","CCTV installed",STAGE_COLOR.cctv]];
     stages.forEach(function(s){
       var k=s[0], on=unitStageOn[k];
-      var c=UNITS.filter(function(u){ if(purposeFilter!=="all"&&u.purpose!==purposeFilter) return false; return unitFurthest(u)===k; }).length;
+      // cumulative "completed" count (a unit that finished Civil has also finished Shed); awaiting = nothing done yet
+      var c=UNITS.filter(function(u){ if(purposeFilter!=="all"&&u.purpose!==purposeFilter) return false; return k==="awaiting" ? unitFurthest(u)==="awaiting" : !!u[k]; }).length;
       var row=document.createElement("div"); row.className="layer "+(on?"on":"off");
       row.innerHTML='<div class="cb">'+checkSvg()+'</div><div class="swatch round" style="background:'+s[2]+'"></div><div class="lname">'+s[1]+'</div><div class="lcount">'+c+'</div>';
       row.addEventListener("click",function(){ unitStageOn[k]=!unitStageOn[k]; rebuildPins(); renderStageLayers(); });
       el.appendChild(row);
     });
-    var note2=document.createElement("div"); note2.className="grp-label"; note2.style.marginTop="9px"; note2.textContent="Pins numbered north to south by furthest stage"; el.appendChild(note2);
+    var note2=document.createElement("div"); note2.className="grp-label"; note2.style.marginTop="9px"; note2.textContent="Counts = RVMs that completed each stage (cumulative). Tick filters pins by their furthest stage."; el.appendChild(note2);
   }
 }
 
