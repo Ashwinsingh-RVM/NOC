@@ -20,7 +20,56 @@
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
 body{font-family:"IBM Plex Sans",sans-serif;color:var(--ink);background:var(--bg);overflow:hidden}
-.app{display:flex;height:100vh;width:100vw}
+.topnav{height:46px;display:flex;align-items:center;gap:16px;padding:0 18px;background:var(--panel);border-bottom:1px solid var(--hair);box-shadow:var(--shadow);position:relative;z-index:30}
+.topnav-brand{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.topnav-tabs{display:flex;gap:4px}
+.topbtn{appearance:none;border:1px solid transparent;background:transparent;font:inherit;font-size:13px;font-weight:600;color:var(--muted);padding:6px 16px;border-radius:8px;cursor:pointer}
+.topbtn:hover{background:var(--hair2);color:var(--ink)}
+.topbtn.active{background:var(--accent);color:#fff}
+.app{display:flex;height:calc(100vh - 46px);width:100vw}
+/* ---------- Executive summary ---------- */
+.summary{height:calc(100vh - 46px);overflow-y:auto;padding:0 0 64px;background:var(--bg)}
+.sum-hero{background:linear-gradient(120deg,#0d9488 0%,#0b7268 55%,#155e63 100%);color:#fff;padding:26px 28px 24px;box-shadow:0 8px 24px rgba(13,148,136,.18)}
+.sum-h{font-family:"Orbitron","IBM Plex Sans",sans-serif;font-size:24px;font-weight:700;letter-spacing:.01em;color:#fff}
+.sum-chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:13px}
+.sum-chips .chip{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:5px 13px;font-size:12px;backdrop-filter:blur(2px)}
+.sum-chips .chip b{font-family:"Orbitron","IBM Plex Sans",sans-serif;font-weight:700;margin-right:4px}
+.sum-section{background:var(--panel);border:1px solid var(--hair);border-radius:16px;padding:18px 20px;margin:18px 26px 0;box-shadow:var(--shadow)}
+.sum-title{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:15px;font-weight:600;display:flex;align-items:center;gap:9px}
+.sum-title .stag{width:11px;height:11px;border-radius:4px}
+.sum-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(166px,1fr));gap:12px}
+.sum-card{position:relative;border:1px solid var(--hair);border-top:3px solid var(--ac,var(--accent));border-radius:12px;padding:14px 15px 13px;background:linear-gradient(180deg,#ffffff,#fbfcfd);transition:transform .12s ease,box-shadow .12s ease;overflow:hidden}
+.sum-card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(20,25,35,.09)}
+.sum-card .sum-ic{position:absolute;top:11px;right:11px;width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;background:var(--ac,var(--accent));opacity:.9}
+.sum-card .sum-ic svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:1.9;stroke-linejoin:round;stroke-linecap:round}
+.sum-card .v{font-family:"Orbitron","IBM Plex Sans",sans-serif;font-size:25px;font-weight:700;line-height:1.05;color:var(--ink)}
+.sum-card .l{font-size:11.5px;color:var(--muted);margin-top:7px;line-height:1.25;font-weight:500}
+.sum-card .s{font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--ac,var(--accent));margin-top:5px;letter-spacing:.01em}
+.sum-glyphcards .sum-card{min-height:96px}
+.sum-tablewrap{overflow-x:auto;border:1px solid var(--hair);border-radius:11px}
+.sum-table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:860px}
+.sum-table th,.sum-table td{padding:10px 11px;text-align:right;border-bottom:1px solid var(--hair2);white-space:nowrap}
+.sum-table thead th{font-family:"IBM Plex Mono",monospace;font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);font-weight:600;background:#f7f9fa;position:sticky;top:0}
+.sum-table th:first-child,.sum-table td:first-child{text-align:left}
+.sum-table tbody tr:nth-child(even){background:#fafbfc}
+.sum-table tbody tr:last-child td{border-bottom:none}
+.sum-table tbody tr:hover{background:#eef6f5}
+.sum-table .num{font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink)}
+.sum-cat{display:inline-flex;align-items:center;gap:9px;font-weight:600}
+.sum-cat .dot{width:10px;height:10px;border-radius:50%;flex:none}
+.sum-table td.dash{color:#cdd2d9;font-weight:400}
+.sum-table td .pct{display:block;color:var(--faint);font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:400;margin-top:2px}
+.sum-foot{font-size:11px;color:var(--muted);margin-top:12px;line-height:1.5}
+/* Mini bar in block table */
+.mini-bar{height:3px;background:var(--hair2);border-radius:2px;margin-top:3px;width:54px}
+.mini-bar span{display:block;height:100%;background:var(--accent);border-radius:2px}
+/* Build-stage bar chart */
+.sc-chart{display:flex;flex-direction:column;gap:9px;padding:4px 0}
+.sc-row{display:flex;align-items:center;gap:10px}
+.sc-label{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--muted);width:70px;flex:none}
+.sc-track{flex:1;height:10px;background:var(--hair2);border-radius:6px;overflow:hidden}
+.sc-fill{height:100%;border-radius:6px;transition:width .5s ease}
+.sc-val{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink);width:90px;flex:none;text-align:right}
 /* ---------- Sidebar ---------- */
 .side{width:360px;min-width:360px;height:100%;overflow-y:auto;background:var(--panel);
   border-right:1px solid var(--hair);box-shadow:var(--shadow);padding:18px 18px 40px;z-index:500}
@@ -124,9 +173,64 @@ h1.title{font-family:"Orbitron",sans-serif;font-weight:700;font-size:18px;letter
 /* mobile */
 @media(max-width:820px){
   .app{flex-direction:column}
-  .side{width:100%;min-width:0;height:auto;max-height:52vh;border-right:none;border-bottom:1px solid var(--hair)}
-  #map{height:48vh}
+  .side{width:100%;min-width:0;height:auto;max-height:48vh;border-right:none;border-bottom:1px solid var(--hair);overflow-y:auto}
+  #map{height:52vh}
+  .topnav{padding:0 10px;gap:8px}
+  .topnav-brand{font-size:9px;letter-spacing:.08em}
+  .topnav-context{display:none}
+  .maplegend{max-width:96%;font-size:9px}
+  .mapstats{display:none}
+  .sum-section{margin:12px 10px 0}
+  .sum-cards{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
 }
+@media(max-width:480px){
+  .topnav{height:40px}
+  .topbtn{font-size:10px;padding:4px 8px}
+  .app{height:calc(100vh - 40px)}
+  .summary{height:calc(100vh - 40px)}
+  .side{max-height:44vh}
+  #map{height:56vh}
+}
+
+/* map block-label overlay */
+.map-ol{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  pointer-events:none;
+  gap:0;text-align:center;overflow:visible;
+}
+/* Block name: transparent watermark sized to fill the polygon width */
+.ol-talname{
+  font-family:"IBM Plex Sans","Orbitron",sans-serif;
+  font-weight:900;letter-spacing:.03em;
+  opacity:0.72;line-height:1;
+  white-space:nowrap;text-align:center;
+  text-transform:uppercase;
+  text-shadow:0 0 8px rgba(255,255,255,.60),0 1px 4px rgba(0,0,0,.18);
+  width:100%;
+}
+/* Big % hero — dominant, in block color */
+.ol-big-pct{
+  font-family:"Orbitron","IBM Plex Sans",sans-serif;
+  font-weight:900;line-height:1;
+  opacity:0.94;
+  text-shadow:0 2px 12px rgba(0,0,0,.22),0 0 18px rgba(255,255,255,.40);
+  letter-spacing:-.02em;margin-top:2px;
+}
+.ol-pct-sym{font-weight:700;vertical-align:super;margin-left:1px;opacity:.85}
+/* Sub number: metric n/d below % */
+.ol-sub-num{
+  font-family:"IBM Plex Mono",monospace;
+  font-weight:700;line-height:1.2;
+  opacity:0.82;
+  margin-top:2px;letter-spacing:.04em;
+  text-shadow:0 1px 3px rgba(0,0,0,.18);
+}
+
+/* top context stats (shown next to brand) */
+.topnav-context{display:flex;align-items:center;gap:12px;margin-left:4px;flex:1;min-width:0}
+.tc-v{font-family:"Orbitron","IBM Plex Sans",sans-serif;font-weight:700;font-size:13px;color:var(--ink);margin-right:2px}
+.tc-l{font-family:"IBM Plex Mono",monospace;font-size:9.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-right:10px}
+
 
 /* panchayat + coverage UI */
 .panchTip{border-radius:7px !important;border:1px solid #e6e8ec !important;
@@ -254,6 +358,12 @@ h1.title{font-family:"Orbitron",sans-serif;font-weight:700;font-size:18px;letter
 .segbtn{flex:1;font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;letter-spacing:.04em;padding:8px;border:none;background:#fff;color:var(--muted);cursor:pointer;text-transform:uppercase;transition:all .12s}
 .segbtn+.segbtn{border-left:1px solid var(--hair)}.segbtn:hover{color:var(--accent-ink)}.segbtn.on{background:var(--accent);color:#fff}
 .upin{width:26px;height:26px;background:var(--pc);color:#fff;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;font-family:"IBM Plex Mono",monospace;font-weight:700;font-size:11px;line-height:1}
+.locpin{width:36px;height:48px;display:flex;align-items:flex-start;justify-content:center;line-height:0}
+.locpin .pinsvg{filter:drop-shadow(0 2px 2px rgba(11,18,32,.4))}
+.locbadge{width:22px;height:22px;min-width:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;border:1.5px solid #fff;box-shadow:0 1px 2px rgba(15,20,30,.25)}
+.locbadge svg{width:13px;height:13px;stroke:#fff;fill:none;stroke-width:1.9;stroke-linejoin:round;stroke-linecap:round}
+.locbadge.rc{background:#ec4899}
+.locbadge.cpc{background:#b45309}
 .upin.rvm{border-radius:50%}
 .upin.rc{border-radius:4px;transform:rotate(45deg)}
 .upin.rc span{transform:rotate(-45deg)}
@@ -282,11 +392,45 @@ h1.title{font-family:"Orbitron",sans-serif;font-weight:700;font-size:18px;letter
 .maplegend .lg-sw.round{border-radius:50%}
 
 
-/* legend polish */
-.maplegend{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:600;display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;background:rgba(255,255,255,.95);border:1px solid var(--hair);border-radius:24px;padding:7px 14px;box-shadow:0 4px 16px rgba(15,23,35,.14);max-width:88%;pointer-events:none}
-.maplegend .lg-title{font-weight:700;color:var(--accent-ink);border-right:1px solid var(--hair);padding-right:10px;margin-right:2px}
-.maplegend .lg-item{font-size:11.5px;background:#f6f8fa;border:1px solid var(--hair);border-radius:20px;padding:3px 9px 3px 6px}
-.maplegend .lg-sw{width:11px;height:11px}
+/* legend polish — smaller/tighter */
+.maplegend{position:absolute;top:8px;left:50%;transform:translateX(-50%);z-index:600;display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:center;background:rgba(255,255,255,.93);border:1px solid var(--hair);border-radius:20px;padding:5px 11px;box-shadow:0 3px 12px rgba(15,23,35,.12);max-width:84%;pointer-events:none}
+.maplegend .lg-title{font-weight:700;font-size:9px;color:var(--accent-ink);border-right:1px solid var(--hair);padding-right:8px;margin-right:1px;letter-spacing:.08em;text-transform:uppercase}
+.maplegend .lg-item{font-size:10.5px;background:#f6f8fa;border:1px solid var(--hair);border-radius:20px;padding:2px 7px 2px 5px}
+.maplegend .lg-sw{width:9px;height:9px}
+/* Collection view pin styles */
+.rvm-dot{width:10px;height:10px;border-radius:50%;border:2px solid;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.rc-globe{width:22px;height:22px;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 1px 2px rgba(0,0,0,.3))}
+.cpc-cluster{width:26px;height:26px;border-radius:6px;box-shadow:0 2px 5px rgba(0,0,0,.3)}
+/* Deployment small dot pin */
+.dep-dot{width:16px;height:16px;border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center;font-family:"IBM Plex Mono",monospace;font-size:8px;font-weight:700;color:#fff;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+/* Summary charts */
+/* ── Summary panel visual styles ── */
+.sv-tabs{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.sv-tab{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;letter-spacing:.03em;background:rgba(255,255,255,.10);color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.20);border-radius:8px;padding:6px 12px;cursor:pointer;transition:all .15s}
+.sv-tab.active{background:rgba(255,255,255,.22);color:#fff;border-color:rgba(255,255,255,.45)}
+.sv-tab:hover{background:rgba(255,255,255,.18);color:#fff}
+.sv-dl-btn{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;letter-spacing:.04em;background:rgba(255,255,255,.10);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.22);border-radius:8px;padding:6px 12px;cursor:pointer;transition:background .15s;margin-left:4px}
+.sv-dl-btn:hover{background:rgba(255,255,255,.22)}
+.sv-kpi-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:16px;padding:4px 0 8px}
+.sv-kpi-cell{display:flex;flex-direction:column;align-items:center;gap:5px}
+.sv-kpi-v{font-family:"Orbitron","IBM Plex Sans",sans-serif;font-size:13px;font-weight:700;color:var(--ink);text-align:center}
+.sv-kpi-l{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--muted);text-align:center;letter-spacing:.03em}
+.sv-stage-grid{display:flex;flex-direction:column;gap:10px;padding:2px 0}
+.sv-stage-row{display:grid;grid-template-columns:10px 110px 1fr;align-items:center;gap:10px}
+.sv-stage-dot{width:10px;height:10px;border-radius:50%;flex:none}
+.sv-stage-lbl{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--muted)}
+.sv-block-grid{display:flex;flex-direction:column;gap:10px;padding:2px 0}
+.sv-bk-row{display:grid;grid-template-columns:110px 1fr;align-items:start;gap:10px}
+.sv-bk-name{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--ink)}
+.sv-bk-dot{width:9px;height:9px;border-radius:50%;flex:none}
+.sv-bk-num{font-family:"IBM Plex Mono",monospace;font-size:9px;color:var(--muted);width:58px;text-align:right;flex:none}
+.sv-bk-bars{display:flex;flex-direction:column;gap:0}
+.sv-type-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;padding:4px 0}
+.sv-type-row2{border:1px solid var(--hair);border-radius:10px;padding:12px 14px}
+.sv-type-head{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--ink);margin-bottom:10px}
+.sv-type-ct{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--muted)}
+.sv-type-pct{font-family:"Orbitron","IBM Plex Sans",sans-serif;font-size:18px;font-weight:700;line-height:1}
+.sv-type-sub{font-family:"IBM Plex Mono",monospace;font-size:9px;color:var(--muted);margin-top:2px}
 
 /* left-side coverage panel overlaid on the map (empty sea area) */
 .mapstats{position:absolute;left:18px;top:48%;transform:translateY(-50%);z-index:600;
@@ -315,7 +459,15 @@ h1.title{font-family:"Orbitron",sans-serif;font-weight:700;font-size:18px;letter
 </style>
 </head>
 <body>
-<div class="app">
+<div class="topnav">
+  <div class="topnav-brand" id="topBrand">Recykal · Goa DRS</div>
+  <div id="topContext" class="topnav-context"></div>
+  <div class="topnav-tabs">
+    <button class="topbtn active" data-tab="map">Rollout Map</button>
+    <button class="topbtn" data-tab="summary">Summary</button>
+  </div>
+</div>
+<div class="app" id="mapApp">
   <aside class="side">
     <div class="eyebrow">Recykal · Goa DRS</div>
     <h1 class="title">RVM Rollout Map</h1>
@@ -334,6 +486,9 @@ h1.title{font-family:"Orbitron",sans-serif;font-weight:700;font-size:18px;letter
     <div class="section-h">RVM Build Dashboard</div>
     <div id="dashboard"></div>
     
+
+    <div class="section-h" id="locSecH">Collection Point Locations</div>
+    <div id="locLayers"></div>
 
     <div class="section-h">Stage Layers</div>
     <div id="stageLayers"></div>
@@ -368,12 +523,13 @@ h1.title{font-family:"Orbitron",sans-serif;font-weight:700;font-size:18px;letter
         <div class="drop" id="drop">Or drop your CSV / XLSX (both tabs) here</div>
         <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" style="display:none"/>
         <div class="status" id="status"></div>
-        <div class="cols"><b>One sheet, two tabs.</b> Both are read automatically from the single link.<br/><b>Authorities</b> tab (one row per body): Authority_Name · Type (Panchayat / Municipality / CCP / Private) · Taluka · NOC · Agreement. Private \u2192 leave NOC blank.<br/><b>Units</b> tab (one row per RVM \u2014 add as many per body as you like): Unit_ID · Authority_Name · Lat · Lng · Shed · Civil · Electrical · Machine · CCTV. Build stages are cumulative; Yes/No (or TRUE/1/\u2713). Lat/Lng optional \u2014 blank rows snap to the body's mapped area. Tab order/extra columns don't matter.</div>
+        <div class="cols"><b>One sheet, three tabs.</b> All read automatically from the single link \u2014 existing tabs are untouched, the planning data lives in its own tab.<br/><b>Authorities</b> (one row per body): Authority_Name · Type (Panchayat / Municipality / CCP / Public / Private) · Block · NOC · Agreement. Public/Private \u2192 leave NOC blank.<br/><b>Units</b> (one row per collection point): Unit_ID · Authority_Name · Purpose (RVM / RC / CPC) · Lat · Lng · Shed · Civil · Electrical · Machine · CCTV.<br/><b>Planning</b> (new \u2014 one row per body): Authority_Name · Location_Finalised · Mail_Sent · Planned_CPs · Planned_CPs_NOC · Planned_CPs_Agreement. Lets you set planned CPs per panchayat, per NOC and per agreement. The <b>Summary</b> tab is computed from all three.</div>
       </div>
     </div>
   </aside>
   <div id="map"><div class="maplegend" id="mapLegend"></div><div class="mapstats" id="mapStats"></div></div>
 </div>
+<div id="summaryPanel" class="summary" style="display:none"></div>
 
 <script>
 "use strict";
@@ -456,8 +612,8 @@ try{ map.fitBounds(districtLayer.getBounds().pad(0.04)); }catch(e){}
 var STAGE_COLOR = {noc:"#15803d", agreement:"#0d9488", shed:"#f59e0b", civil:"#0ea5e9", electrical:"#eab308", machine:"#16a34a", cctv:"#db2777", installed:"#16a34a", rc:"#ec4899"};
 var STAGE_LABEL = {noc:"NOC received", agreement:"Agreement signed", shed:"Shed ready", civil:"Civil work done", electrical:"Electrical work done", machine:"Machine installed", cctv:"CCTV installed", installed:"Installed"};
 var RVM_BUILD   = ["shed","civil","electrical","machine","cctv"];
-var TYPE_COLOR  = {Panchayat:"#0d9488", Municipality:"#6366f1", CCP:"#f59e0b", Private:"#ec4899"};
-var TYPE_ORDER  = ["Panchayat","Municipality","CCP","Private"];
+var TYPE_COLOR  = {Panchayat:"#0d9488", Municipality:"#6366f1", CCP:"#f59e0b", Public:"#0ea5e9", Private:"#ec4899"};
+var TYPE_ORDER  = ["Panchayat","Municipality","CCP","Public","Private"];
 
 var BLOCK2TAL = {tiswadi:"Tiswadi",bardez:"Bardez",salcete:"Salcete",pernem:"Pernem",dharbandora:"Dharbandora",
   mormugao:"Mormugao",cancona:"Canacona",canacona:"Canacona",ponda:"Ponda",bicholim:"Bicholim",
@@ -469,6 +625,7 @@ function titleType(s){ var k=normName(s);
   if(k.indexOf("muni")>=0||k.indexOf("council")>=0||k.indexOf("nagar")>=0) return "Municipality";
   if(k==="ccp"||k.indexOf("corporation")>=0||k.indexOf("panaji corp")>=0) return "CCP";
   if(k.indexOf("priv")>=0) return "Private";
+  if(k==="public"||k.indexOf("public")>=0||k.indexOf("govt")>=0||k.indexOf("government")>=0) return "Public";
   return s? (s.charAt(0).toUpperCase()+s.slice(1)) : "Other";
 }
 function truthy(v){ if(v==null) return false; var s=String(v).trim().toLowerCase();
@@ -500,18 +657,30 @@ var MUNI_CENTROID_NORM = {};
 function bodyCentroid(nm){ return PANCH_CENTROID_NORM[normName(nm)] || MUNI_CENTROID_NORM[normName(nm)] || null; }
 
 /* ===================== DATA STATE ===================== */
-var AUTH = [];   // [{name,type,taluka,noc(true/false/null),agreement,lat,lng}]
-var UNITS = [];  // [{unit_id,authority,type,purpose,lat,lng, shed,civil,electrical,machine(/installed)}]
+var AUTH = [];   // [{name,type,taluka,noc,agreement,locationFinalised,mailSent,plannedCPs,plannedCPsNoc,plannedCPsAgr,lat,lng}]
+var UNITS = [];  // RVM collection points
+var RC_UNITS = []; // Return Centres
+var CPC_UNITS = []; // Collection & Processing Centres (warehouses)
 var AUTH_BY = {};
 
 function indexAuth(){ AUTH_BY={}; AUTH.forEach(function(a){ AUTH_BY[normName(a.name)]=a; }); }
 function authOf(name){ return AUTH_BY[normName(name)]||null; }
-function nocApplies(a){ return a && a.type!=="Private"; }     // Private = agreement only
+function nocApplies(a){ return a && a.type!=="Private" && a.type!=="Public"; }     // Private/Public = agreement only
 
 (function initFromEmbedded(){
-  AUTH = AUTH_SEED.map(function(a){ return {name:a.name,type:a.type,taluka:a.taluka||"",noc:a.noc,agreement:!!a.agreement,lat:a.lat,lng:a.lng}; });
-  UNITS = UNIT_SEED.filter(function(u){ return String(u.purpose).toUpperCase()!=="RC"; }).map(function(u){ return {unit_id:u.unit_id,authority:u.authority,type:u.type,purpose:"RVM",lat:u.lat,lng:u.lng,
+  var planCount={};
+  UNIT_SEED.forEach(function(u){ if(String(u.purpose).toUpperCase()==="RVM"||!u.purpose){ var k=normName(u.authority); planCount[k]=(planCount[k]||0)+1; } });
+  AUTH = AUTH_SEED.map(function(a){
+    var k=normName(a.name), plan=planCount[k]||0, applies=(a.type!=="Private"&&a.type!=="Public");
+    return {name:a.name,type:a.type,taluka:a.taluka||"",noc:a.noc,agreement:!!a.agreement,
+            locationFinalised:plan>0, mailSent:(a.noc===true||!!a.agreement||plan>0), plannedCPs:plan,
+            plannedCPsNoc:(applies&&a.noc===true)?plan:0, plannedCPsAgr:(a.agreement?plan:0), lat:a.lat,lng:a.lng};
+  });
+  var P=function(p){ return String(p||"RVM").toUpperCase(); };
+  UNITS = UNIT_SEED.filter(function(u){ return P(u.purpose)==="RVM"||!u.purpose; }).map(function(u){ return {unit_id:u.unit_id,authority:u.authority,type:u.type,purpose:"RVM",lat:u.lat,lng:u.lng,
     shed:!!u.shed,civil:!!u.civil,electrical:!!u.electrical,machine:!!u.machine,cctv:!!u.cctv,installed:!!u.installed}; });
+  RC_UNITS  = UNIT_SEED.filter(function(u){ return P(u.purpose)==="RC"; }).map(function(u){ return {unit_id:u.unit_id,authority:u.authority,type:u.type,purpose:"RC",lat:u.lat,lng:u.lng,installed:!!u.installed}; });
+  CPC_UNITS = UNIT_SEED.filter(function(u){ return P(u.purpose)==="CPC"; }).map(function(u){ return {unit_id:u.unit_id,authority:u.authority,type:u.type,purpose:"CPC",lat:u.lat,lng:u.lng,installed:!!u.installed}; });
   indexAuth();
 })();
 
@@ -615,11 +784,16 @@ function authAreaStat(key, taluka){
 function fmtKm(x){ return Math.round(x).toLocaleString(); }
 
 /* ===================== State ===================== */
-var viewMode    = "authority";   // "authority" | "units"
+var viewMode    = "coverage";    // "coverage" | "deployment" | "collection"
 var authStage   = "noc";          // shaded stage in authority view (noc|agreement)
 var purposeFilter = "all";        // all | RVM | RC  (units view)
 var unitStageOn = {}; ["awaiting","shed","civil","electrical","machine","cctv"].forEach(function(k){ unitStageOn[k]=true; });
+var depToggleOn = false; // persists across renderStageLayers re-renders
 var unitsCov = {noc:false, agreement:false};   // Collection Points: shade polygons like coverage when on
+var locTypeOn = {RVM:true, RC:false, CPC:false}; // which collection-point types to plot
+var collOverlay = {blockNames:false, noc:false, agreement:false, machine:false}; // label overlays in collection view
+var collTypeFilter = {Panchayat:true, Municipality:true, CCP:true, Public:true, Private:true}; // type filter for collection pins
+var labelGroup = L.layerGroup(); // transparent block labels
 var baseOn      = {panchayats:true, municipals:true, talukas:true, districts:false};
 var autoTimer=null, autoUrl=null;
 
@@ -628,18 +802,18 @@ var talLayerByName={};
 function talBaseStyle(name){
   // When a coverage stage (NOC/Agreement) is selected — in either view — grey-out the blocks
   // so the coloured NOC/Agreement shading reads clearly on top.
-  if((viewMode==="authority" && authStage) || (viewMode==="units" && (unitsCov.noc||unitsCov.agreement))){
+  if((viewMode==="coverage" && authStage) || ((viewMode==="deployment"||viewMode==="collection") && (unitsCov.noc||unitsCov.agreement))){
     return {color:"#cfd3d9", weight:1.0, fillColor:"#d4d8de", fillOpacity:0.35, opacity:0.85};
   }
   return {color:"#3a424e", weight:1.4, fillColor:(TAL_COLORS[name]||"#bbb"),
-    fillOpacity:(viewMode==="authority"?0.30:0.42), opacity:0.95};
+    fillOpacity:(viewMode==="coverage"?0.30:0.42), opacity:0.95};
 }
 function talTip(name){
   var rows="";
   var n=talAuthStat(name,"noc"), a=talAuthStat(name,"agreement");
-  rows+='<div style="'+((viewMode==="authority"&&authStage==="noc")?'font-weight:700;color:'+STAGE_COLOR.noc:'color:#374151')+'">'+
+  rows+='<div style="'+((viewMode==="coverage"&&authStage==="noc")?'font-weight:700;color:'+STAGE_COLOR.noc:'color:#374151')+'">'+
     '<span style="display:inline-block;width:7px;height:7px;border-radius:2px;background:'+STAGE_COLOR.noc+';margin-right:5px"></span>NOC '+n.covered+'/'+n.total+'</div>';
-  rows+='<div style="'+((viewMode==="authority"&&authStage==="agreement")?'font-weight:700;color:'+STAGE_COLOR.agreement:'color:#374151')+'">'+
+  rows+='<div style="'+((viewMode==="coverage"&&authStage==="agreement")?'font-weight:700;color:'+STAGE_COLOR.agreement:'color:#374151')+'">'+
     '<span style="display:inline-block;width:7px;height:7px;border-radius:2px;background:'+STAGE_COLOR.agreement+';margin-right:5px"></span>Agreement '+a.covered+'/'+a.total+'</div>';
   var rvm=talUnitStat(name,"total","RVM"), rc=talUnitStat(name,"total","RC"), mac=talUnitStat(name,"machine","RVM");
   rows+='<div style="color:#374151;margin-top:2px"><span style="display:inline-block;width:7px;height:7px;border-radius:2px;background:'+STAGE_COLOR.machine+';margin-right:5px"></span>'+rvm.covered+' RVM ('+mac.covered+' installed)</div>';
@@ -651,7 +825,7 @@ var talukaLayer=L.geoJSON(TALUKA_GEO,{
   style:function(f){ return talBaseStyle(f.properties.name); },
   onEachFeature:function(f,lyr){ var name=f.properties.name; talLayerByName[name]=lyr;
     lyr.bindTooltip(function(){ return talTip(name); },{sticky:true,direction:"top",opacity:.97,className:"panchTip"});
-    lyr.on("mouseover",function(){ lyr.setStyle({weight:2.6,color:"#1f2733",fillOpacity:(viewMode==="authority"?0.42:0.6)}); lyr.bringToFront(); });
+    lyr.on("mouseover",function(){ lyr.setStyle({weight:2.6,color:"#1f2733",fillOpacity:(viewMode==="coverage"?0.42:0.6)}); lyr.bringToFront(); });
     lyr.on("mouseout",function(){ lyr.setStyle(talBaseStyle(name)); if(map.hasLayer(panchayatLayer)) panchayatLayer.bringToFront(); if(map.hasLayer(districtLayer)) districtLayer.bringToFront(); });
     lyr.on("click",function(){ openTalukaPopup(name); });
   }
@@ -686,7 +860,7 @@ function panchAuthStatus(vp){
 function panchStyle(feature){
   var st=panchAuthStatus(feature.properties.name);
   var nocOn = st && st.noc===true, agrOn = st && st.agreement===true;
-  if(viewMode==="authority" && authStage){
+  if(viewMode==="coverage" && authStage){
     var fill=null;
     if(authStage==="noc" && nocOn) fill=STAGE_COLOR.noc;
     else if(authStage==="agreement" && agrOn) fill=STAGE_COLOR.agreement;
@@ -694,12 +868,25 @@ function panchStyle(feature){
     if(fill){ return {color:"#0a0d13", weight:1.5, fillColor:fill, fillOpacity:0.80, opacity:1.0}; }
     return {color:"#0a0d13", weight:1.4, fillColor:"#ffffff", fillOpacity:0.0, opacity:1.0};
   }
-  if(viewMode==="units" && (unitsCov.noc||unitsCov.agreement)){   // coverage overlay: green covered, grey the rest
+  if((viewMode==="deployment"||viewMode==="collection") && (unitsCov.noc||unitsCov.agreement)){   // coverage overlay
     var f2=null;
     if(unitsCov.agreement && agrOn) f2=STAGE_COLOR.agreement;
     else if(unitsCov.noc && nocOn) f2=STAGE_COLOR.noc;
     if(f2) return {color:"#0a0d13", weight:1.4, fillColor:f2, fillOpacity:0.85, opacity:1.0};
     return {color:"#9aa1ab", weight:1.0, fillColor:"#c7ccd3", fillOpacity:0.5, opacity:0.9};
+  }
+  // Collection overlay fills
+  if(viewMode==="collection"){
+    var nm2=feature.properties.name, a2=authOf(nm2);
+    if(collOverlay.machine){
+      var U2=UNITS.filter(function(u){return normName(u.authority)===normName(nm2);});
+      var macPct=U2.length?U2.filter(function(u){return u.machine;}).length/U2.length:0;
+      if(U2.length>0) return {color:"#0a0d13",weight:1.4,fillColor:STAGE_COLOR.machine,fillOpacity:Math.max(0.08,macPct*0.85),opacity:1.0};
+    }
+    if(collOverlay.agreement && a2 && a2.agreement) return {color:"#0a0d13",weight:1.4,fillColor:STAGE_COLOR.agreement,fillOpacity:0.72,opacity:1.0};
+    if(collOverlay.noc && a2 && nocApplies(a2) && a2.noc===true) return {color:"#0a0d13",weight:1.4,fillColor:STAGE_COLOR.noc,fillOpacity:0.72,opacity:1.0};
+    if(collOverlay.noc||collOverlay.agreement||collOverlay.machine) return {color:"#9aa1ab",weight:1.0,fillColor:"#c7ccd3",fillOpacity:0.35,opacity:0.9};
+    return {color:"#0a0d13",weight:1.4,fillColor:"#ffffff",fillOpacity:0.0,opacity:1.0};
   }
   return {color:"#0a0d13", weight:1.4, fillColor:"#ffffff", fillOpacity:0.0, opacity:1.0};
 }
@@ -730,7 +917,7 @@ function refreshPanchayatStyles(){ panchayatLayer.eachLayer(function(l){ panchay
 function muniStyle(feature){
   var a=authOf(feature.properties.authority);
   var nocOn=a&&(nocApplies(a)?a.noc===true:a.agreement===true), agrOn=a&&a.agreement===true;
-  if(viewMode==="authority" && authStage){
+  if(viewMode==="coverage" && authStage){
     var fill=null;
     if(authStage==="noc" && nocOn) fill=STAGE_COLOR.noc;
     else if(authStage==="agreement" && agrOn) fill=STAGE_COLOR.agreement;
@@ -738,7 +925,7 @@ function muniStyle(feature){
     if(fill) return {color:"#0a0d13", weight:1.7, fillColor:fill, fillOpacity:0.82, opacity:1.0};
     return {color:"#0a0d13", weight:1.6, fillColor:"#ffffff", fillOpacity:0.0, opacity:1.0};
   }
-  if(viewMode==="units" && (unitsCov.noc||unitsCov.agreement)){
+  if((viewMode==="deployment"||viewMode==="collection") && (unitsCov.noc||unitsCov.agreement)){
     var f2=null;
     if(unitsCov.agreement && agrOn) f2=STAGE_COLOR.agreement;
     else if(unitsCov.noc && nocOn) f2=STAGE_COLOR.noc;
@@ -783,6 +970,143 @@ function refreshMuniStyles(){ muniLayer.eachLayer(function(l){ muniLayer.resetSt
 
 /* ===================== Map: unit pins ===================== */
 var pinGroup=L.layerGroup();
+var labelGroup=L.layerGroup();
+/* Build transparent label/value overlays on panchayat centroids */
+function rebuildLabels(){
+  labelGroup.clearLayers();
+  if(viewMode!=="collection") return;
+  var anyOverlay=collOverlay.blockNames||collOverlay.noc||collOverlay.agreement||collOverlay.machine;
+  TALUKA_GEO.features.forEach(function(f){
+    var lyr=talLayerByName[f.properties.name]; if(!lyr) return;
+    lyr.setStyle(talBaseStyle(f.properties.name));
+  });
+  if(!anyOverlay) return;
+  // Per-block custom anchors (lat/lng offsets) and rotation angles
+  // Adjusted to keep labels inside their geo
+  var CUSTOM = {
+    "Sattari":     {dlat: 0.00, dlng: 0.00, rot: -8},
+    "Sanguem":     {dlat:-0.04, dlng: 0.00, rot:  0},
+    "Dharbandora": {dlat: 0.04, dlng:-0.02, rot:  0},
+    "Quepem":      {dlat: 0.00, dlng: 0.00, rot:  0},
+    "Canacona":    {dlat:-0.02, dlng: 0.00, rot:  0},
+    "Ponda":       {dlat: 0.00, dlng: 0.00, rot:  0},
+    "Mormugao":    {dlat: 0.00, dlng:-0.01, rot:  0},
+    "Tiswadi":     {dlat: 0.00, dlng: 0.00, rot:  0}
+  };
+  TALUKA_GEO.features.forEach(function(f){
+    var tal=f.properties.name;
+    var baseLat=f.properties.lat, baseLng=f.properties.lng;
+    if(!isFinite(baseLat)||!isFinite(baseLng)) return;
+    var adj=CUSTOM[tal]||{dlat:0,dlng:0,rot:0};
+    var lat=baseLat+(adj.dlat||0), lng=baseLng+(adj.dlng||0);
+    var rot=adj.rot||0;
+    var lyr=talLayerByName[tal];
+    var talCol=TAL_COLORS[tal]||"#888888";
+    // Aggregates
+    var asInBlock=AUTH.filter(function(a){return a.taluka===tal;});
+    var totalA=asInBlock.length;
+    var nocA=asInBlock.filter(function(a){return nocApplies(a)&&a.noc===true;}).length;
+    var agrA=asInBlock.filter(function(a){return a.agreement;}).length;
+    var U4=UNITS.filter(function(u){var a=authOf(u.authority);return a&&a.taluka===tal;});
+    var macA=U4.filter(function(u){return u.machine;}).length;
+    // Pixel bbox
+    var pxW=100,pxH=70;
+    try{
+      var bb=lyr.getBounds();
+      var sw=map.latLngToContainerPoint(bb.getSouthWest());
+      var ne=map.latLngToContainerPoint(bb.getNorthEast());
+      pxW=Math.abs(ne.x-sw.x); pxH=Math.abs(sw.y-ne.y);
+    }catch(e){}
+    pxW=Math.max(48,pxW); pxH=Math.max(32,pxH);
+    var useW=Math.round(pxW*0.72), useH=Math.round(pxH*0.72);
+    // Active metric
+    var metric=null;
+    if(collOverlay.noc&&totalA) metric={pct:Math.round(nocA/totalA*100),n:nocA,d:totalA,label:"NOC"};
+    else if(collOverlay.agreement&&totalA) metric={pct:Math.round(agrA/totalA*100),n:agrA,d:totalA,label:"Agr"};
+    else if(collOverlay.machine&&U4.length) metric={pct:Math.round(macA/U4.length*100),n:macA,d:U4.length,label:"Mach"};
+    // Fill polygon with block's own color
+    if(lyr&&metric){
+      lyr.setStyle({fillColor:talCol,fillOpacity:Math.max(0.13,metric.pct/100*0.78),color:talCol,weight:2,opacity:0.92});
+    } else if(lyr&&collOverlay.blockNames){
+      lyr.setStyle({fillColor:talCol,fillOpacity:0.22,color:talCol,weight:2,opacity:0.92});
+    }
+    // ── Text colours: dark ink so always readable regardless of polygon fill ──
+    // Name: very dark version of the block color (darken + near-black mix)
+    var darkInk="#1a1f2e";   // near-black for numbers — maximum contrast
+    var nameInk="#1a2332";   // very dark blue-grey for name
+    // % color: deep dark version of the block color for visual identity without blending in
+    var pctInk=darkInk;      // solid dark so it pops over any fill
+
+    // Font sizes relative to usable area
+    var nfs=Math.min(Math.round(useW/(tal.length*0.58)),Math.round(useH*0.38),50);
+    nfs=Math.max(nfs,10);
+    var pfs=Math.min(Math.round(useH*0.48),Math.round(useW*0.36),62);
+    pfs=Math.max(pfs,16);
+    var sfs=Math.max(Math.round(pfs*0.32),9);
+    // Rotation transform
+    var rotStyle=rot?"transform:rotate("+rot+"deg);":""
+    // Build parts
+    var parts=[];
+    if(collOverlay.blockNames && !metric){
+      parts.push(
+        '<div style="font-family:\'IBM Plex Sans\',sans-serif;font-size:'+nfs+'px;font-weight:900;'+
+        'color:'+nameInk+';opacity:0.82;line-height:1.05;letter-spacing:.02em;'+
+        'text-transform:uppercase;white-space:nowrap;text-align:center;'+
+        'text-shadow:0 1px 0 rgba(255,255,255,.9);">'+tal+'</div>'
+      );
+    } else if(metric && !collOverlay.blockNames){
+      parts.push(
+        '<div style="font-family:\'Orbitron\',\'IBM Plex Sans\',sans-serif;font-size:'+pfs+'px;font-weight:900;'+
+        'color:'+pctInk+';opacity:0.92;line-height:1;letter-spacing:-.01em;'+
+        'text-shadow:0 1px 0 rgba(255,255,255,.85);">'+
+        metric.pct+'<span style="font-size:'+Math.round(pfs*.52)+'px;vertical-align:super">%</span></div>'
+      );
+      parts.push(
+        '<div style="font-family:\'IBM Plex Mono\',monospace;font-size:'+sfs+'px;font-weight:700;'+
+        'color:'+darkInk+';opacity:0.78;letter-spacing:.04em;margin-top:2px;'+
+        'text-shadow:0 1px 0 rgba(255,255,255,.7);">'+metric.label+' '+metric.n+'/'+metric.d+'</div>'
+      );
+    } else if(metric && collOverlay.blockNames){
+      var nfs2=Math.min(Math.round(useW/(tal.length*0.68)),Math.round(useH*0.20),20);
+      nfs2=Math.max(nfs2,8);
+      var pfs2=Math.min(Math.round(useH*0.38),Math.round(useW*0.30),52);
+      pfs2=Math.max(pfs2,14);
+      var sfs2=Math.max(Math.round(pfs2*0.30),8);
+      parts.push(
+        '<div style="font-family:\'IBM Plex Sans\',sans-serif;font-size:'+nfs2+'px;font-weight:800;'+
+        'color:'+nameInk+';opacity:0.65;line-height:1;text-transform:uppercase;letter-spacing:.04em;'+
+        'white-space:nowrap;text-shadow:0 1px 0 rgba(255,255,255,.8);">'+tal+'</div>'
+      );
+      parts.push(
+        '<div style="font-family:\'Orbitron\',\'IBM Plex Sans\',sans-serif;font-size:'+pfs2+'px;font-weight:900;'+
+        'color:'+pctInk+';opacity:0.90;line-height:1;letter-spacing:-.01em;margin-top:2px;'+
+        'text-shadow:0 1px 0 rgba(255,255,255,.85);">'+
+        metric.pct+'<span style="font-size:'+Math.round(pfs2*.50)+'px;vertical-align:super">%</span></div>'
+      );
+      parts.push(
+        '<div style="font-family:\'IBM Plex Mono\',monospace;font-size:'+sfs2+'px;font-weight:700;'+
+        'color:'+darkInk+';opacity:0.72;letter-spacing:.04em;margin-top:1px;'+
+        'text-shadow:0 1px 0 rgba(255,255,255,.7);">'+metric.label+' '+metric.n+'/'+metric.d+'</div>'
+      );
+    }
+    if(!parts.length) return;
+    var html=(
+      '<div style="width:'+useW+'px;'+rotStyle+
+      'display:flex;flex-direction:column;align-items:center;'+
+      'justify-content:center;pointer-events:none;text-align:center;">'+
+      parts.join("")+'</div>'
+    );
+    var icon=L.divIcon({className:"",html:html,
+      iconSize:[useW,useH],
+      iconAnchor:[Math.round(useW/2),Math.round(useH/2)]});
+    L.marker([lat,lng],{icon:icon,interactive:false}).addTo(labelGroup);
+  });
+  // Ensure pins still show when overlays are active
+  // Re-add pinGroup last so it renders above polygon layers
+  if(map.hasLayer(pinGroup)){ map.removeLayer(pinGroup); map.addLayer(pinGroup); }
+  // Re-add labelGroup last so it renders above polygon layers
+  if(map.hasLayer(labelGroup)){ map.removeLayer(labelGroup); map.addLayer(labelGroup); }
+}
 var PIPE_STAGES=["noc","agreement","shed","civil","electrical","machine","cctv"];
 function unitFurthest(u){
   var idx=-1; for(var i=0;i<RVM_BUILD.length;i++){ if(u[RVM_BUILD[i]]) idx=i; }
@@ -790,29 +1114,95 @@ function unitFurthest(u){
 }
 function unitColor(u){ var f=unitFurthest(u); return f==="awaiting" ? "#94a3b8" : (STAGE_COLOR[f]||"#cbd0d8"); }
 function unitVisible(u){
-  if(purposeFilter!=="all" && u.purpose!==purposeFilter) return false;
-  if(unitFurthest(u)==="awaiting") return !!unitStageOn.awaiting;
-  for(var i=0;i<RVM_BUILD.length;i++){ if(u[RVM_BUILD[i]] && unitStageOn[RVM_BUILD[i]]) return true; }
-  return false;
+  var f=unitFurthest(u);
+  if(f==="awaiting") return !!unitStageOn.awaiting;
+  // strict mode: selected stages show only units where that is their FURTHEST stage
+  var active=RVM_BUILD.filter(function(k){return unitStageOn[k];});
+  if(active.length===0) return false;
+  return active.indexOf(f)>=0;
+}
+/* type glyphs (white stroke, drawn on a coloured badge) */
+function glyphRVM(){ return '<svg viewBox="0 0 24 24"><rect x="6.5" y="2.6" width="11" height="18.8" rx="2"/><path d="M9.4 6h5.2"/><rect x="9.4" y="8.6" width="5.2" height="5" rx="1"/><path d="M9.4 17.4h5.2"/></svg>'; }
+function glyphRC(){ return '<svg viewBox="0 0 24 24"><path d="M18.4 8.6A7 7 0 1 0 19 12"/><path d="M19 4.4v4.2h-4.2"/><path d="M9.6 12.4l2.4 2.9 2.4-2.9"/><path d="M12 15V9.2"/></svg>'; }
+function glyphCPC(){ return '<svg viewBox="0 0 24 24"><path d="M3.6 10.4 12 5l8.4 5.4"/><path d="M5.4 9.8v9.4h13.2V9.8"/><rect x="9.7" y="13.2" width="4.6" height="6"/></svg>'; }
+/* pictorial teardrop map markers (little illustration sitting in a coloured pin) */
+function pinSVG(color, inner){
+  return '<svg class="pinsvg" viewBox="0 0 36 48" width="36" height="48" xmlns="http://www.w3.org/2000/svg">'+
+    '<path d="M18 46.5C9 34 3.5 27 3.5 16.5a14.5 14.5 0 0 1 29 0C32.5 27 27 34 18 46.5Z" fill="'+color+'" stroke="#ffffff" stroke-width="1.7"/>'+
+    '<circle cx="18" cy="15.8" r="11" fill="#ffffff"/>'+inner+'</svg>';
+}
+function picRVM(col){  // reverse vending machine: body, screen, bottle hole, collection tray
+  return '<rect x="12.4" y="8.6" width="11.2" height="14.6" rx="1.6" fill="'+col+'"/>'+
+    '<rect x="14.1" y="10.2" width="7.8" height="3.5" rx="0.7" fill="#ffffff"/>'+
+    '<circle cx="18" cy="16.9" r="2.1" fill="#ffffff"/>'+
+    '<rect x="14.1" y="20.3" width="7.8" height="2" rx="0.6" fill="#ffffff"/>';
+}
+function picRC(){      // return centre: recycling drop-off bin with arrows
+  var c="#db2777";
+  return '<rect x="11.6" y="10.4" width="12.8" height="2.4" rx="1.1" fill="'+c+'"/>'+
+    '<path d="M12.7 13.2h10.6l-1 9.6a1.2 1.2 0 0 1-1.2 1.06h-6.2a1.2 1.2 0 0 1-1.2-1.06Z" fill="'+c+'"/>'+
+    '<path d="M16 15.6v5.4M18 15.6v5.4M20 15.6v5.4" stroke="#ffffff" stroke-width="1.1" stroke-linecap="round"/>'+
+    '<path d="M16.1 9.1l1.9-1.5 1.9 1.5" fill="none" stroke="'+c+'" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"/>';
+}
+function picCPC(){     // warehouse: pitched roof, body, roller door
+  var c="#b45309";
+  return '<path d="M10.6 16.2 18 10.4l7.4 5.8" fill="none" stroke="'+c+'" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>'+
+    '<rect x="11.7" y="15.8" width="12.6" height="7.8" rx="0.6" fill="'+c+'"/>'+
+    '<rect x="15.3" y="18" width="5.4" height="5.6" rx="0.4" fill="#ffffff"/>'+
+    '<path d="M15.3 19.5h5.4M15.3 20.9h5.4M15.3 22.3h5.4" stroke="'+c+'" stroke-width="0.8"/>';
+}
+function locIcon(kind, col){
+  var inner = kind==="RVM"?picRVM(col||"#16a34a") : (kind==="RC"?picRC() : picCPC());
+  var color = kind==="RVM"?(col||"#16a34a") : (kind==="RC"?"#ec4899" : "#b45309");
+  return L.divIcon({className:"", html:'<div class="locpin">'+pinSVG(color,inner)+'</div>',
+    iconSize:[36,48], iconAnchor:[18,46], popupAnchor:[0,-42]});
 }
 function rebuildPins(){
   pinGroup.clearLayers();
-  if(viewMode!=="units") return;
-  var vis=UNITS.filter(function(u){ return isFinite(u.lat)&&isFinite(u.lng)&&unitVisible(u); });
-  vis.sort(function(a,b){ return b.lat-a.lat; });
-  vis.forEach(function(u,i){
-    var col=unitColor(u), num=i+1, isRC=u.purpose==="RC";
-    var shape=isRC?"rc":"rvm";
-    var icon=L.divIcon({className:"", html:'<div class="upin '+shape+'" style="--pc:'+col+'"><span>'+num+'</span></div>',
-      iconSize:[26,26], iconAnchor:[13,13], popupAnchor:[0,-13]});
-    var m=L.marker([u.lat,u.lng],{icon:icon});
-    var f=unitFurthest(u);
-    var stageTxt = f==="awaiting"?"Awaiting build":STAGE_LABEL[f];
-    m.bindPopup('<div class="pn">'+(u.unit_id||"RVM")+'</div>'+
-      '<div class="pt">'+(u.type||"")+(u.authority?(" \u00b7 "+u.authority):"")+'</div>'+
-      '<span class="pchip" style="background:'+col+'">'+stageTxt+'</span>',{maxWidth:240});
-    m.addTo(pinGroup);
-  });
+  if(viewMode!=="deployment" && viewMode!=="collection") return;
+  if(viewMode==="deployment"){
+    // Deployment: small dot pins coloured by furthest build stage
+    UNITS.filter(function(u){ return isFinite(u.lat)&&isFinite(u.lng)&&unitVisible(u); }).forEach(function(u){
+      var col=unitColor(u), f=unitFurthest(u), stageTxt=f==="awaiting"?"Awaiting build":STAGE_LABEL[f];
+      var ltr=(f==="awaiting"?"?":{shed:"S",civil:"C",electrical:"E",machine:"M",cctv:"V"}[f]||"·");
+      var dotI=L.divIcon({className:"",html:'<div class="dep-dot" style="background:'+col+';border-color:'+col+'cc">'+ltr+'</div>',iconSize:[16,16],iconAnchor:[8,8],popupAnchor:[0,-10]});
+      var m=L.marker([u.lat,u.lng],{icon:dotI});
+      m.bindPopup('<div class="pn">'+(u.unit_id||"RVM")+'</div><div class="pt">RVM \u00b7 '+(u.type||"")+(u.authority?(" \u00b7 "+u.authority):"")+'</div><span class="pchip" style="background:'+col+'">'+stageTxt+'</span>',{maxWidth:240});
+      m.addTo(pinGroup);
+    });
+  } else {
+    // Collection: dots for RVM, glass-globe for RC, cluster-marker for CPC
+    if(locTypeOn.RVM){
+      var rvmLocCol="#0d9488"; // single teal — location pin, not build stage
+      UNITS.filter(function(u){ return isFinite(u.lat)&&isFinite(u.lng)&&collTypeFilter[u.type||"Panchayat"]; }).forEach(function(u){
+        var dotIcon=L.divIcon({className:"",html:'<div class="rvm-dot" style="background:'+rvmLocCol+';border-color:'+rvmLocCol+'90"></div>',iconSize:[10,10],iconAnchor:[5,5],popupAnchor:[0,-7]});
+        var m=L.marker([u.lat,u.lng],{icon:dotIcon});
+        m.bindPopup('<div class="pn">'+(u.unit_id||"RVM")+'</div><div class="pt">RVM'+(u.type?" \u00b7 "+u.type:"")+(u.authority?" \u00b7 "+u.authority:"")+'</div><span class="pchip" style="background:'+rvmLocCol+'">RVM location</span>',{maxWidth:240});
+        m.addTo(pinGroup);
+      });
+    }
+    if(locTypeOn.RC){
+      RC_UNITS.filter(function(u){ return isFinite(u.lat)&&isFinite(u.lng); }).forEach(function(u){
+        // Glass-globe pin
+        var glassIcon=L.divIcon({className:"",html:'<div class="rc-globe"><svg viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="10" fill="#ec4899" opacity=".18" stroke="#ec4899" stroke-width="1.4"/><circle cx="11" cy="11" r="10" fill="none" stroke="#ec4899" stroke-width="1.4"/><ellipse cx="11" cy="11" rx="5" ry="10" fill="none" stroke="#ec4899" stroke-width="1"/><path d="M1.5 11h19M5 5.3C7.3 6.8 9 8.8 9 11s-1.7 4.2-4 5.7M17 5.3c-2.3 1.5-4 3.5-4 5.7s1.7 4.2 4 5.7" fill="none" stroke="#ec4899" stroke-width=".9"/><circle cx="11" cy="11" r="2.2" fill="#ec4899" opacity=".5"/></svg></div>',iconSize:[22,22],iconAnchor:[11,11],popupAnchor:[0,-12]});
+        var m=L.marker([u.lat,u.lng],{icon:glassIcon});
+        m.bindPopup('<div class="pn">'+(u.unit_id||"Return centre")+'</div><div class="pt">Return centre'+(u.authority?" \u00b7 "+u.authority:"")+'</div><span class="pchip" style="background:#ec4899">Return centre</span>',{maxWidth:240});
+        m.addTo(pinGroup);
+      });
+    }
+    if(locTypeOn.CPC){
+      // Cluster-style: group nearby CPCs and show count badge
+      CPC_UNITS.filter(function(u){ return isFinite(u.lat)&&isFinite(u.lng); }).forEach(function(u){
+        var warehIcon=L.divIcon({className:"",html:'<div class="cpc-cluster"><svg viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg"><rect width="26" height="26" rx="6" fill="#b45309"/><path d="M4 13L13 7l9 6" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/><rect x="5" y="13" width="16" height="8" rx="1" fill="#ffffff" opacity=".25"/><rect x="5" y="13" width="16" height="8" rx="1" fill="none" stroke="#fff" stroke-width="1.4"/><rect x="10" y="16" width="6" height="5" rx=".6" fill="#b45309"/><path d="M13 16v5" stroke="#fff" stroke-width=".8"/></svg></div>',iconSize:[26,26],iconAnchor:[13,13],popupAnchor:[0,-14]});
+        var m=L.marker([u.lat,u.lng],{icon:warehIcon});
+        m.bindPopup('<div class="pn">'+(u.unit_id||"CPC")+'</div><div class="pt">Collection &amp; processing centre'+(u.authority?" \u00b7 "+u.authority:"")+'</div><span class="pchip" style="background:#b45309">CPC / warehouse</span>',{maxWidth:240});
+        m.addTo(pinGroup);
+      });
+    }
+  }
+  // Always bring pins above all polygon layers
+  // Re-add pinGroup last so it renders above polygon layers
+  if(map.hasLayer(pinGroup)){ map.removeLayer(pinGroup); map.addLayer(pinGroup); }
 }
 
 /* ===================== View application ===================== */
@@ -822,22 +1212,32 @@ function applyView(){
   refreshPanchayatStyles();
   if(baseOn.municipals){ if(!map.hasLayer(muniLayer)) map.addLayer(muniLayer); } else { if(map.hasLayer(muniLayer)) map.removeLayer(muniLayer); }
   refreshMuniStyles();
-  if(viewMode==="units"){ if(!map.hasLayer(pinGroup)) map.addLayer(pinGroup); } else { if(map.hasLayer(pinGroup)) map.removeLayer(pinGroup); }
+  if(viewMode==="deployment"||viewMode==="collection"){ if(!map.hasLayer(pinGroup)) map.addLayer(pinGroup); } else { if(map.hasLayer(pinGroup)) map.removeLayer(pinGroup); }
   if(baseOn.talukas){ if(!map.hasLayer(talukaLayer)) map.addLayer(talukaLayer); } else { if(map.hasLayer(talukaLayer)) map.removeLayer(talukaLayer); }
   if(baseOn.districts){ if(!map.hasLayer(districtLayer)) map.addLayer(districtLayer); } else { if(map.hasLayer(districtLayer)) map.removeLayer(districtLayer); }
   if(map.hasLayer(talukaLayer)) talukaLayer.bringToBack();
   if(map.hasLayer(panchayatLayer)) panchayatLayer.bringToFront();
+  // label group for collection overlay
+  if(viewMode==="collection"){ if(!map.hasLayer(labelGroup)) map.addLayer(labelGroup); rebuildLabels(); }
+  else { if(map.hasLayer(labelGroup)) map.removeLayer(labelGroup); labelGroup.clearLayers(); }
   if(map.hasLayer(muniLayer)) muniLayer.bringToFront();
   if(map.hasLayer(districtLayer)) districtLayer.bringToFront();
+  // Pins and labels always above all polygon layers
+  // Re-add pinGroup last so it renders above polygon layers
+  if(map.hasLayer(pinGroup)){ map.removeLayer(pinGroup); map.addLayer(pinGroup); }
+  // Re-add labelGroup last so it renders above polygon layers
+  if(map.hasLayer(labelGroup)){ map.removeLayer(labelGroup); map.addLayer(labelGroup); }
   if(typeof renderMapLegend==="function") renderMapLegend();
   if(typeof renderMapStats==="function") renderMapStats();
 }
-function setViewMode(m){ viewMode=m; if(m==="authority"&&!authStage) authStage="noc"; applyView(); rebuildPins(); renderAll(); }
+function setViewMode(m){ viewMode=m; if(m==="coverage"&&!authStage) authStage="noc"; applyView(); rebuildPins(); renderAll(); renderMapStats(); }
+// Rebuild block labels after zoom so pixel-bbox sizes are correct
+map.on("zoomend moveend", function(){ if(viewMode==="collection") rebuildLabels(); });
 
 /* ===================== UI ===================== */
 function renderViewToggle(){
   var el=document.getElementById("viewToggle"); if(!el) return; el.innerHTML="";
-  [["authority","Coverage (area)"],["units","Collection Points"]].forEach(function(o){
+  [["coverage","Coverage Area"],["deployment","RVM Deployment"],["collection","Collection Points"]].forEach(function(o){
     var b=document.createElement("button"); b.className="segbtn"+(viewMode===o[0]?" on":""); b.textContent=o[1];
     b.addEventListener("click",function(){ setViewMode(o[0]); }); el.appendChild(b);
   });
@@ -845,6 +1245,23 @@ function renderViewToggle(){
 
 /* Dashboard: flexible, sections auto-built from data */
 function statCard(label,val,color,kind){ return '<div class="rstat '+(kind||"")+'"><div class="rnum" style="color:'+(color||"#1f2733")+'">'+val+'</div><div class="rlbl">'+label+'</div></div>'; }
+function renderTopContext(){
+  var ctx=document.getElementById("topContext"); if(!ctx) return;
+  var ov=summaryFor(null);
+  var nf2=function(x){return (x||0).toLocaleString();};
+  var labels={
+    coverage:  '<span class="tc-v">'+nf2(ov.bodies)+'</span><span class="tc-l">bodies</span>'
+               +'<span class="tc-v" style="color:'+STAGE_COLOR.noc+'">'+nf2(ov.noc)+'</span><span class="tc-l">NOC</span>'
+               +'<span class="tc-v" style="color:'+STAGE_COLOR.agreement+'">'+nf2(ov.agr)+'</span><span class="tc-l">agreement</span>',
+    deployment:'<span class="tc-v">'+nf2(UNITS.length)+'</span><span class="tc-l">RVMs</span>'
+               +'<span class="tc-v" style="color:'+STAGE_COLOR.machine+'">'+nf2(ov.machine)+'</span><span class="tc-l">machines</span>'
+               +'<span class="tc-v">'+Math.round(ov.machine/Math.max(1,UNITS.length)*100)+'%</span><span class="tc-l">installed</span>',
+    collection:'<span class="tc-v">'+nf2(UNITS.length)+'</span><span class="tc-l">RVMs</span>'
+               +'<span class="tc-v" style="color:#ec4899">'+nf2(RC_UNITS.length)+'</span><span class="tc-l">RC</span>'
+               +'<span class="tc-v" style="color:#b45309">'+nf2(CPC_UNITS.length)+'</span><span class="tc-l">CPC</span>'
+  };
+  ctx.innerHTML=labels[viewMode]||"";
+}
 function renderDashboard(){
   var el=document.getElementById("dashboard"); if(!el) return;
   var html="";
@@ -855,40 +1272,46 @@ function renderDashboard(){
   html+=statCard("NOC received", noc.covered+" / "+noc.total, STAGE_COLOR.noc,"kp");
   html+=statCard("Agreement signed", agr.covered+" / "+agr.total, STAGE_COLOR.agreement,"kp");
   html+='</div>';
-  // --- Area coverage (geographic: panchayat polygons + ULB footprints) ---
-  var nocA=authAreaStat("noc"), agrA=authAreaStat("agreement");
-  html+='<div class="dsec">Area coverage <span style="text-transform:none;letter-spacing:0;color:var(--faint)">\u00b7 share of mapped GP + ULB area</span></div><div class="dashgrid">';
-  html+=statCard("NOC area \u00b7 "+fmtKm(nocA.coveredKm)+"/"+fmtKm(nocA.totalKm)+" km\u00b2", nocA.pct+"%", STAGE_COLOR.noc,"kp");
-  html+=statCard("Agreement area \u00b7 "+fmtKm(agrA.coveredKm)+"/"+fmtKm(agrA.totalKm)+" km\u00b2", agrA.pct+"%", STAGE_COLOR.agreement,"kp");
-  html+=statCard("Mapped area \u00b7 GP+ULB", fmtKm(totalCoverageArea())+" km\u00b2", "#1f2733","kp");
-  html+='</div>';
-  // per-type breakdown (auto)
-  html+='<div class="typewrap">';
-  authTypes().forEach(function(t){
-    var n=authStat("noc",t), a=authStat("agreement",t);
-    var nocTxt = n.total? (n.covered+"/"+n.total) : "N/A";
-    html+='<div class="typerow"><span class="tdot" style="background:'+(TYPE_COLOR[t]||"#888")+'"></span>'+
-      '<span class="tname2">'+t+'</span>'+
-      '<span class="tnums">NOC '+nocTxt+' \u00b7 Agr '+a.covered+'/'+a.total+'</span></div>';
-  });
-  html+='</div>';
-  // --- RVM build progress (literal per-stage marks; visible in both views) ---
-  var totU=UNITS.length;
-  html+='<div class="dsec">RVM build progress <span style="text-transform:none;letter-spacing:0;color:var(--faint)">\u00b7 '+totU+' RVMs</span></div><div class="typewrap">';
-  [["shed","Shed"],["civil","Civil work"],["electrical","Electrical"],["machine","Machine installed"],["cctv","CCTV installed"]].forEach(function(s){
-    var done=UNITS.filter(function(u){ return !!u[s[0]]; }).length;
-    var pct=totU?Math.round(done/totU*100):0;
-    html+='<div class="typerow"><span class="tdot" style="background:'+STAGE_COLOR[s[0]]+'"></span>'+
-      '<span class="tname2">'+s[1]+'</span>'+
-      '<span class="tnums">'+done+' / '+totU+' \u00b7 '+pct+'%</span></div>';
-  });
-  html+='</div>';
+  // area coverage: only coverage tab
+  if(viewMode==="coverage"){
+    var nocA=authAreaStat("noc"), agrA=authAreaStat("agreement");
+    html+='<div class="dsec">Area coverage <span style="text-transform:none;letter-spacing:0;color:var(--faint)">\u00b7 share of mapped GP + ULB area</span></div><div class="dashgrid">';
+    html+=statCard("NOC area \u00b7 "+fmtKm(nocA.coveredKm)+"/"+fmtKm(nocA.totalKm)+" km\u00b2", nocA.pct+"%", STAGE_COLOR.noc,"kp");
+    html+=statCard("Agreement area \u00b7 "+fmtKm(agrA.coveredKm)+"/"+fmtKm(agrA.totalKm)+" km\u00b2", agrA.pct+"%", STAGE_COLOR.agreement,"kp");
+    html+=statCard("Mapped area \u00b7 GP+ULB", fmtKm(totalCoverageArea())+" km\u00b2", "#1f2733","kp");
+    html+='</div>';
+  }
+  // per-type breakdown: only on Coverage tab
+  if(viewMode==="coverage"){
+    html+='<div class="typewrap">';
+    authTypes().forEach(function(t){
+      var n=authStat("noc",t), a=authStat("agreement",t);
+      var nocTxt = n.total? (n.covered+"/"+n.total) : "N/A";
+      html+='<div class="typerow"><span class="tdot" style="background:'+(TYPE_COLOR[t]||"#888")+'"></span>'+
+        '<span class="tname2">'+t+'</span>'+
+        '<span class="tnums">NOC '+nocTxt+' \u00b7 Agr '+a.covered+'/'+a.total+'</span></div>';
+    });
+    html+='</div>';
+  }
+  // RVM build progress only shown in Coverage tab
+  if(viewMode==="coverage"){
+    var totU=UNITS.length;
+    html+='<div class="dsec">RVM build progress <span style="text-transform:none;letter-spacing:0;color:var(--faint)">\u00b7 '+totU+' RVMs</span></div><div class="typewrap">';
+    [["shed","Shed"],["civil","Civil work"],["electrical","Electrical"],["machine","Machine installed"],["cctv","CCTV installed"]].forEach(function(sv){
+      var done=UNITS.filter(function(u){ return !!u[sv[0]]; }).length;
+      var pct=totU?Math.round(done/totU*100):0;
+      html+='<div class="typerow"><span class="tdot" style="background:'+STAGE_COLOR[sv[0]]+'"></span>'+
+        '<span class="tname2">'+sv[1]+'</span>'+
+        '<span class="tnums">'+done+' / '+totU+' \u00b7 '+pct+'%</span></div>';
+    });
+    html+='</div>';
+  }
   el.innerHTML=html;
 }
 
 function renderStageLayers(){
   var el=document.getElementById("stageLayers"); if(!el) return; el.innerHTML="";
-  if(viewMode==="authority"){
+  if(viewMode==="coverage"){
     var h1=document.createElement("div"); h1.className="grp-label first"; h1.textContent="Tap a stage \u2192 shade panchayat coverage"; el.appendChild(h1);
     [["noc","NOC received"],["agreement","Agreement signed"],["both","Both (NOC + Agreement)"]].forEach(function(o){
       var k=o[0]; var active=(authStage===k);
@@ -900,26 +1323,48 @@ function renderStageLayers(){
       el.appendChild(row);
     });
     var note=document.createElement("div"); note.className="grp-label"; note.style.marginTop="9px"; note.textContent="Blocks turn grey; selected stage shown by coloured panchayat borders"; el.appendChild(note);
-  } else {
+  } else if(viewMode==="deployment"){
     var hc=document.createElement("div"); hc.className="grp-label first"; hc.textContent="Coverage overlay \u2014 shade NOC / Agreement areas"; el.appendChild(hc);
-    [["noc","NOC received",STAGE_COLOR.noc],["agreement","Agreement signed",STAGE_COLOR.agreement]].forEach(function(s){
-      var k=s[0], on=unitsCov[k];
+    [["noc","NOC received",STAGE_COLOR.noc],["agreement","Agreement signed",STAGE_COLOR.agreement]].forEach(function(sv){
+      var k=sv[0], on=unitsCov[k];
       var row=document.createElement("div"); row.className="layer "+(on?"on":"off");
-      row.innerHTML='<div class="cb">'+checkSvg()+'</div><div class="swatch" style="background:'+s[2]+'"></div><div class="lname">'+s[1]+'</div>';
+      row.innerHTML='<div class="cb">'+checkSvg()+'</div><div class="swatch" style="background:'+sv[2]+'"></div><div class="lname">'+sv[1]+'</div>';
       row.addEventListener("click",function(){ unitsCov[k]=!unitsCov[k]; applyView(); renderStageLayers(); });
       el.appendChild(row);
     });
-    var h2=document.createElement("div"); h2.className="grp-label"; h2.style.marginTop="10px"; h2.textContent="Collection points by build stage"; el.appendChild(h2);
+    // Collapsible build-stage filter (depToggleOn is module-level)
+    var h2=document.createElement("div"); h2.className="grp-label"; h2.style.marginTop="10px";
+    h2.style.cursor="pointer"; h2.style.userSelect="none";
+    h2.style.display="flex"; h2.style.alignItems="center"; h2.style.justifyContent="space-between";
+    var h2span=document.createElement("span"); h2span.textContent="Show build-stage filters"; h2.appendChild(h2span);
+    var h2arr=document.createElement("span"); h2arr.textContent="▸"; h2arr.style.fontSize="10px"; h2.appendChild(h2arr);
+    el.appendChild(h2);
+    var stageWrap=document.createElement("div"); stageWrap.style.display="none"; el.appendChild(stageWrap);
+    h2.addEventListener("click",function(){
+      depToggleOn=!depToggleOn; stageWrap.style.display=depToggleOn?"":"none";
+      h2arr.textContent=depToggleOn?"▾":"▸";
+      h2span.textContent=depToggleOn?"Hide build-stage filters":"Show build-stage filters";
+    });
     var stages=[["awaiting","Awaiting build","#94a3b8"],["shed","Shed",STAGE_COLOR.shed],["civil","Civil work",STAGE_COLOR.civil],["electrical","Electrical",STAGE_COLOR.electrical],["machine","Machine installed",STAGE_COLOR.machine],["cctv","CCTV installed",STAGE_COLOR.cctv]];
-    stages.forEach(function(s){
-      var k=s[0], on=unitStageOn[k];
-      var c=UNITS.filter(function(u){ if(purposeFilter!=="all"&&u.purpose!==purposeFilter) return false; return k==="awaiting" ? unitFurthest(u)==="awaiting" : !!u[k]; }).length;
+    stages.forEach(function(sv){
+      var k=sv[0], on=unitStageOn[k];
+      var c=UNITS.filter(function(u){ return k==="awaiting" ? unitFurthest(u)==="awaiting" : !!u[k]; }).length;
       var row=document.createElement("div"); row.className="layer "+(on?"on":"off");
-      row.innerHTML='<div class="cb">'+checkSvg()+'</div><div class="swatch round" style="background:'+s[2]+'"></div><div class="lname">'+s[1]+'</div><div class="lcount">'+c+'</div>';
+      row.innerHTML='<div class="cb">'+checkSvg()+'</div><div class="swatch round" style="background:'+sv[2]+'"></div><div class="lname">'+sv[1]+'</div><div class="lcount">'+c+'</div>';
       row.addEventListener("click",function(){ unitStageOn[k]=!unitStageOn[k]; rebuildPins(); renderStageLayers(); });
+      stageWrap.appendChild(row);
+    });
+    var note2=document.createElement("div"); note2.className="grp-label"; note2.style.marginTop="9px"; note2.textContent="Counts = RVMs at each stage."; stageWrap.appendChild(note2);
+  } else {
+    // collection view — no stage layers needed; just show quick coverage toggle
+    var hc2=document.createElement("div"); hc2.className="grp-label first"; hc2.textContent="Coverage overlay (optional)"; el.appendChild(hc2);
+    [["noc","NOC covered",STAGE_COLOR.noc],["agreement","Agreement covered",STAGE_COLOR.agreement]].forEach(function(sv){
+      var k=sv[0], on=unitsCov[k];
+      var row=document.createElement("div"); row.className="layer "+(on?"on":"off");
+      row.innerHTML='<div class="cb">'+checkSvg()+'</div><div class="swatch" style="background:'+sv[2]+'"></div><div class="lname">'+sv[1]+'</div>';
+      row.addEventListener("click",function(){ unitsCov[k]=!unitsCov[k]; applyView(); renderStageLayers(); });
       el.appendChild(row);
     });
-    var note2=document.createElement("div"); note2.className="grp-label"; note2.style.marginTop="9px"; note2.textContent="Counts = RVMs marked at each stage. Tick a stage to show those pins (coloured by furthest stage)."; el.appendChild(note2);
   }
 }
 
@@ -929,7 +1374,7 @@ function renderBaseLayers(){
     var on=baseOn[r.key];
     var row=document.createElement("div"); row.className="layer "+(on?"on":"off");
     row.innerHTML='<div class="cb">'+checkSvg()+'</div><div class="swatch" style="background:'+r.sw+'"></div><div class="lname">'+r.name+'</div>';
-    row.addEventListener("click",function(){ baseOn[r.key]=!baseOn[r.key]; applyView(); renderBaseLayers(); });
+    row.addEventListener("click",function(){ baseOn[r.key]=!baseOn[r.key]; applyView(); rebuildPins(); renderBaseLayers(); });
     el.appendChild(row);
   });
 }
@@ -963,7 +1408,7 @@ function renderTalukaDetail(){
     var segs=""; [["#dfe2e7",b[0]],[STAGE_COLOR.shed,b[1]],[STAGE_COLOR.civil,b[2]],[STAGE_COLOR.electrical,b[3]],[STAGE_COLOR.machine,b[4]],[STAGE_COLOR.cctv,b[5]]].forEach(function(s){ if(s[1]>0) segs+='<span style="flex:'+s[1]+';background:'+s[0]+'"></span>'; });
     var row=document.createElement("div"); row.className="trow"; row.style.cursor="pointer";
     row.innerHTML='<div class="thead"><div style="display:flex;align-items:center;gap:7px"><span style="width:10px;height:10px;border-radius:3px;background:'+col+';box-shadow:0 0 0 1px rgba(0,0,0,.12)"></span><span class="tname">'+nm+'</span> <span class="tdist">'+dist+(gps!==""?(" \u00b7 "+gps+" GP"):"")+'</span></div><div class="tcounts"><b>'+noc.covered+'</b> NOC \u00b7 <b>'+rvm+'</b> RVM'+(rc?(' \u00b7 <b>'+rc+'</b> RC'):'')+'</div></div><div class="bar">'+segs+'</div>';
-    row.addEventListener("mouseenter",function(){ var l=talLayerByName[nm]; if(l&&map.hasLayer(talukaLayer)){ l.setStyle({weight:2.6,color:"#1f2733",fillOpacity:(viewMode==="authority"?0.42:0.6)}); l.bringToFront(); } });
+    row.addEventListener("mouseenter",function(){ var l=talLayerByName[nm]; if(l&&map.hasLayer(talukaLayer)){ l.setStyle({weight:2.6,color:"#1f2733",fillOpacity:(viewMode==="coverage"?0.42:0.6)}); l.bringToFront(); } });
     row.addEventListener("mouseleave",function(){ var l=talLayerByName[nm]; if(l&&map.hasLayer(talukaLayer)){ l.setStyle(talBaseStyle(nm)); if(map.hasLayer(panchayatLayer)) panchayatLayer.bringToFront(); if(map.hasLayer(districtLayer)) districtLayer.bringToFront(); } });
     row.addEventListener("click",function(){ flyTaluka(nm); });
     el.appendChild(row);
@@ -1001,11 +1446,242 @@ function renderBodies(){
   });
 }
 
+/* ===================== Executive Summary view ===================== */
+function summaryFor(types){
+  var A = AUTH.filter(function(a){ return !types || types.indexOf(a.type)>=0; });
+  var keyset={}; A.forEach(function(a){ keyset[normName(a.name)]=1; });
+  var U = UNITS.filter(function(u){ return keyset[normName(u.authority)]; });
+  var blocks={}, loc=0,mail=0,noc=0,agr=0,plan=0,planNoc=0,planAgr=0;
+  A.forEach(function(a){
+    if(a.taluka) blocks[a.taluka]=1;
+    if(a.locationFinalised) loc++;
+    if(a.mailSent) mail++;
+    if(nocApplies(a)&&a.noc) noc++;
+    if(a.agreement) agr++;
+    plan+=(a.plannedCPs||0); planNoc+=(a.plannedCPsNoc||0); planAgr+=(a.plannedCPsAgr||0);
+  });
+  return {blocks:Object.keys(blocks).length, bodies:A.length, loc:loc, mail:mail, noc:noc, agr:agr,
+    plan:plan, actual:U.length, machine:U.filter(function(u){return u.machine;}).length,
+    cpNoc:planNoc, cpNocPct: plan?Math.round(planNoc/plan*100):0,
+    cpAgr:planAgr, cpAgrPct: plan?Math.round(planAgr/plan*100):0};
+}
+
+/* ── Summary panel: Tables (v29 exact) then Visuals (v31) ───────────── */
+function svgDonut(pct,col,r){
+  var c=2*Math.PI*r,d=c*(pct/100),cx=r+8,cy=r+8,s2=(r+8)*2;
+  return '<svg viewBox="0 0 '+s2+' '+s2+'" width="'+s2+'" height="'+s2+'">'
+    +'<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="#eef0f4" stroke-width="8.5"/>'
+    +'<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="'+col+'" stroke-width="8.5"'
+    +' stroke-dasharray="'+d+' '+(c-d)+'" stroke-dashoffset="'+(c*0.25)+'" stroke-linecap="round"/>'
+    +'<text x="'+cx+'" y="'+(cy+4.5)+'" text-anchor="middle" font-size="12.5" font-weight="700" font-family="Orbitron,sans-serif" fill="'+col+'">'+pct+'%</text>'
+    +'</svg>';
+}
+function svgBar(val,max,col,h){
+  var p=max?Math.round(val/max*100):0;
+  return '<div style="display:flex;align-items:center;gap:8px">'
+    +'<div style="flex:1;height:'+h+'px;background:#eef0f4;border-radius:99px;overflow:hidden">'
+    +'<div style="width:'+p+'%;height:100%;background:'+col+';border-radius:99px;transition:width .3s"></div>'
+    +'</div><span style="font-family:IBM Plex Mono,monospace;font-size:10px;color:#6b7280;width:52px;text-align:right;flex:none">'+val+' \u00b7 '+p+'%</span></div>';
+}
+function downloadSummaryCSV(){
+  var rows=[["Block","Auth","NOC","NOC%","Agr","Agr%","RVMs","Machine","Mach%"]];
+  var tals=[]; AUTH.forEach(function(a){if(a.taluka&&tals.indexOf(a.taluka)<0) tals.push(a.taluka);}); tals.sort();
+  tals.forEach(function(tal){
+    var A=AUTH.filter(function(a){return a.taluka===tal;});
+    var nA=A.filter(function(a){return nocApplies(a)&&a.noc===true;}).length;
+    var aA=A.filter(function(a){return a.agreement;}).length;
+    var Uu=UNITS.filter(function(u){var aa=authOf(u.authority);return aa&&aa.taluka===tal;});
+    var mA=Uu.filter(function(u){return u.machine;}).length;
+    rows.push([tal,A.length,nA,A.length?Math.round(nA/A.length*100)+"%":"0%",aA,A.length?Math.round(aA/A.length*100)+"%":"0%",Uu.length,mA,Uu.length?Math.round(mA/Uu.length*100)+"%":"0%"]);
+  });
+  var csv=rows.map(function(r){return r.map(function(v){return '"'+String(v).replace(/"/g,'""')+'"';}).join(",");}).join("\n");
+  var a=document.createElement("a"); a.href="data:text/csv;charset=utf-8,"+encodeURIComponent(csv); a.download="Goa_DRS_Summary.csv"; a.click();
+}
+var summaryTab="table";
+function switchSummaryTab(t){ summaryTab=t; renderSummary(); }
+
+function renderSummary(){
+  var host=document.getElementById("summaryPanel"); if(!host) return;
+  var ov=summaryFor(null), P=summaryFor(["Panchayat"]), U=summaryFor(["Municipality","CCP"]),
+      PUB=summaryFor(["Public"]), PRI=summaryFor(["Private"]);
+  var nf=function(x){return (x||0).toLocaleString();};
+  var pct=function(a,b){return b?Math.round(a/b*100):0;};
+  var T=STAGE_COLOR;
+  var talukaNames=[]; AUTH.forEach(function(a){if(a.taluka&&talukaNames.indexOf(a.taluka)<0) talukaNames.push(a.taluka);}); talukaNames.sort();
+
+  var tabBar='<div class="sv-tabs">'
+    +'<button class="sv-tab'+(summaryTab==="table"?" active":"")+"\" onclick=\"switchSummaryTab('table')\">&#128203; Tables</button>"
+    +'<button class="sv-tab'+(summaryTab==="visual"?" active":"")+"\" onclick=\"switchSummaryTab('visual')\">&#128202; Visual</button>"
+    +'<button class="sv-dl-btn" onclick="downloadSummaryCSV()">&#8595; CSV</button>'
+    +'</div>';
+  var hero='<div class="sum-hero">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">'
+    +'<div><div class="sum-h">Goa DRS \u00b7 Executive Summary</div>'
+    +'<div style="font-size:11px;color:rgba(255,255,255,.6);margin-top:3px;font-family:IBM Plex Mono,monospace">'
+    +new Date().toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"})+'</div></div>'
+    +tabBar+'</div>'
+    +'<div class="sum-chips" style="margin-top:12px">'
+    +['<b>'+nf(ov.bodies)+'</b> authorities','<b>'+nf(UNITS.length)+'</b> RVMs','<b>'+nf(ov.blocks)+'</b> blocks','<b>'+nf(RC_UNITS.length+CPC_UNITS.length)+'</b> collection points']
+     .map(function(t){return '<span class="chip">'+t+'</span>';}).join("")
+    +'</div></div>';
+
+  // ══ TAB 1: TABLES (v29 exact) ════════════════════════════════════════════
+  if(summaryTab==="table"){
+    function card(v,l,sub,ac){
+      return '<div class="sum-card"'+(ac?' style="--ac:'+ac+'"':'')+'>'+
+        '<div class="v">'+v+'</div><div class="l">'+l+'</div>'+(sub?'<div class="s">'+sub+'</div>':'')+'</div>';
+    }
+    var cards=[
+      card(nf(ov.blocks),"Total blocks","talukas with bodies","#6366f1"),
+      card(nf(P.bodies),"Total panchayats","of "+nf(ov.bodies)+" authorities","#0d9488"),
+      card(nf(ov.loc),"Location finalised",nf(ov.loc)+" of "+nf(ov.bodies)+" bodies \u00b7 "+pct(ov.loc,ov.bodies)+"%","#0ea5e9"),
+      card(nf(ov.mail),"Mail sent",nf(ov.mail)+" of "+nf(ov.bodies)+" bodies \u00b7 "+pct(ov.mail,ov.bodies)+"%","#0891b2"),
+      card(nf(ov.noc),"Total NOC",nf(ov.noc)+" of "+nf(ov.bodies)+" bodies \u00b7 "+pct(ov.noc,ov.bodies)+"%",T.noc),
+      card(nf(ov.agr),"Total agreement",nf(ov.agr)+" of "+nf(ov.bodies)+" bodies \u00b7 "+pct(ov.agr,ov.bodies)+"%",T.agreement),
+      card(nf(ov.plan),"Total plan CPs","planned across "+nf(ov.bodies)+" bodies","#64748b"),
+      card(nf(ov.actual),"Actual CPs",nf(ov.actual)+" of "+nf(ov.plan)+" planned \u00b7 "+pct(ov.actual,ov.plan)+"%","#16a34a"),
+      card(nf(ov.cpNoc),"CPs as per NOC",nf(ov.cpNoc)+" of "+nf(ov.plan)+" planned CPs \u00b7 "+ov.cpNocPct+"%",T.noc),
+      card(nf(ov.cpAgr),"CPs as per agreement",nf(ov.cpAgr)+" of "+nf(ov.plan)+" planned CPs \u00b7 "+ov.cpAgrPct+"%",T.agreement),
+      card(nf(ov.machine),"Machine deployed",nf(ov.machine)+" of "+nf(ov.actual)+" CPs \u00b7 "+pct(ov.machine,ov.actual)+"%","#15803d")
+    ].join("");
+    var cols=["Category","Blocks","Bodies","Loc. final","Mail sent","NOC","Agreement","Plan CPs","Actual CPs","CPs / NOC","CPs / Agr","Machine"];
+    var head="<thead><tr>"+cols.map(function(c){return "<th>"+c+"</th>";}).join("")+"</tr></thead>";
+    var DASH='<td class="dash">\u2013</td>';
+    function ratioCell(n,den,p){return '<td class="num">'+nf(n)+'<span class="pct">'+nf(n)+'/'+nf(den)+' \u00b7 '+p+'%</span></td>';}
+    function full(name,color,d){
+      return '<tr><td><span class="sum-cat"><span class="dot" style="background:'+color+'"></span>'+name+'</span></td>'+
+        '<td class="num">'+nf(d.blocks)+'</td><td class="num">'+nf(d.bodies)+'</td>'+
+        '<td class="num">'+nf(d.loc)+'</td><td class="num">'+nf(d.mail)+'</td>'+
+        '<td class="num">'+nf(d.noc)+'</td><td class="num">'+nf(d.agr)+'</td>'+
+        '<td class="num">'+nf(d.plan)+'</td><td class="num">'+nf(d.actual)+'</td>'+
+        ratioCell(d.cpNoc,d.plan,d.cpNocPct)+ratioCell(d.cpAgr,d.plan,d.cpAgrPct)+
+        '<td class="num">'+nf(d.machine)+'</td></tr>';
+    }
+    function lite(name,color,d){
+      return '<tr><td><span class="sum-cat"><span class="dot" style="background:'+color+'"></span>'+name+'</span></td>'+
+        DASH+'<td class="num">'+nf(d.bodies)+'</td>'+DASH+DASH+DASH+
+        '<td class="num">'+nf(d.agr)+'</td><td class="num">'+nf(d.plan)+'</td><td class="num">'+nf(d.actual)+'</td>'+
+        DASH+ratioCell(d.cpAgr,d.plan,d.cpAgrPct)+'<td class="num">'+nf(d.machine)+'</td></tr>';
+    }
+    var body="<tbody>"+full("Panchayats",TYPE_COLOR.Panchayat,P)+full("ULBs (Municipal + CCP)",TYPE_COLOR.Municipality,U)+
+      lite("Public",TYPE_COLOR.Public,PUB)+lite("Private",TYPE_COLOR.Private,PRI)+"</tbody>";
+    var net=card(nf(UNITS.length),"Total RVMs","reverse vending machines","#16a34a")+
+            card(nf(RC_UNITS.length),"Return centres","RC drop-off points","#ec4899")+
+            card(nf(CPC_UNITS.length),"CPCs / warehouses","collection & processing","#b45309")+
+            card(nf(ov.machine),"Machines deployed",nf(ov.machine)+" of "+nf(ov.actual)+" CPs \u00b7 "+pct(ov.machine,ov.actual)+"%","#15803d");
+    function sumBlock(tal){
+      var A=AUTH.filter(function(a){return a.taluka===tal;});
+      var ks={}; A.forEach(function(a){ks[normName(a.name)]=1;});
+      var Uu=UNITS.filter(function(u){return ks[normName(u.authority)];});
+      return {panch:A.length,loc:A.filter(function(a){return a.locationFinalised;}).length,
+              mail:A.filter(function(a){return a.mailSent;}).length,
+              noc:A.filter(function(a){return nocApplies(a)&&a.noc;}).length,
+              agr:A.filter(function(a){return a.agreement;}).length,
+              plan:A.reduce(function(t,a){return t+(a.plannedCPs||0);},0),actual:Uu.length,
+              cpNoc:A.reduce(function(t,a){return t+(a.plannedCPsNoc||0);},0),
+              cpNocPct:0,cpAgr:A.reduce(function(t,a){return t+(a.plannedCPsAgr||0);},0),cpAgrPct:0,
+              mach:Uu.filter(function(u){return u.machine;}).length};
+    }
+    var bHead='<thead><tr><th>Block</th><th>Panchayats</th><th>Loc.</th><th>Mail</th><th>NOC</th><th>Agr.</th><th>Plan CPs</th><th>Actual CPs</th><th>CPs/NOC</th><th>CPs/Agr</th><th>Machine</th></tr></thead><tbody>';
+    var bBody=talukaNames.map(function(tal){
+      var d=sumBlock(tal); var bw=d.plan?Math.round(d.actual/d.plan*100):0;
+      d.cpNocPct=d.plan?Math.round(d.cpNoc/d.plan*100):0; d.cpAgrPct=d.plan?Math.round(d.cpAgr/d.plan*100):0;
+      return '<tr><td style="font-weight:600">'+tal+'</td>'+
+        '<td class="num">'+nf(d.panch)+'</td><td class="num">'+nf(d.loc)+'</td><td class="num">'+nf(d.mail)+'</td>'+
+        '<td class="num">'+nf(d.noc)+'</td><td class="num">'+nf(d.agr)+'</td>'+
+        '<td class="num">'+nf(d.plan)+'<div class="mini-bar"><span style="width:'+bw+'%"></span></div></td>'+
+        '<td class="num">'+nf(d.actual)+'</td>'+
+        '<td class="num">'+nf(d.cpNoc)+'<span class="pct">'+d.cpNocPct+'%</span></td>'+
+        '<td class="num">'+nf(d.cpAgr)+'<span class="pct">'+d.cpAgrPct+'%</span></td>'+
+        '<td class="num">'+nf(d.mach)+'</td></tr>';
+    }).join("")+"</tbody>";
+    var stages3=[["shed","Shed",T.shed],["civil","Civil work",T.civil],["electrical","Electrical",T.electrical],["cctv","CCTV",T.cctv],["machine","Machine installed",T.machine]];
+    var sc=stages3.map(function(sv){
+      var cnt=UNITS.filter(function(u){return !!u[sv[0]];}).length;
+      var pv=UNITS.length?Math.round(cnt/UNITS.length*100):0;
+      return '<div class="sc-row"><span class="sc-label">'+sv[1]+'</span>'+
+        '<div class="sc-track"><div class="sc-fill" style="width:'+pv+'%;background:'+sv[2]+'"></div></div>'+
+        '<span class="sc-val">'+nf(cnt)+' ('+pv+'%)</span></div>';
+    }).join("");
+    var dCols=["Block","Total Panchayats","NOC","Agreement","Shed","Civil","Electrical","CCTV","Machine Installed %"];
+    var dHead='<thead><tr>'+dCols.map(function(c){return '<th>'+c+'</th>';}).join('')+'</tr></thead><tbody>';
+    var dBody=talukaNames.map(function(tal){
+      var A=AUTH.filter(function(a){return a.taluka===tal;});
+      var ks={}; A.forEach(function(a){ks[normName(a.name)]=1;});
+      var Uv=UNITS.filter(function(u){return ks[normName(u.authority)];});
+      var no=A.filter(function(a){return nocApplies(a)&&a.noc;}).length;
+      var ag=A.filter(function(a){return a.agreement;}).length;
+      var sh=Uv.filter(function(u){return u.shed;}).length;
+      var cv=Uv.filter(function(u){return u.civil;}).length;
+      var el=Uv.filter(function(u){return u.electrical;}).length;
+      var ma=Uv.filter(function(u){return u.machine;}).length;
+      var ct=Uv.filter(function(u){return u.cctv;}).length;
+      var mp=Uv.length?Math.round(ma/Uv.length*100):0;
+      return '<tr><td style="font-weight:600">'+tal+'</td>'+
+        '<td class="num">'+nf(A.length)+'</td><td class="num">'+nf(no)+'</td><td class="num">'+nf(ag)+'</td>'+
+        '<td class="num">'+nf(sh)+'</td><td class="num">'+nf(cv)+'</td><td class="num">'+nf(el)+'</td>'+
+        '<td class="num">'+nf(ct)+'</td><td class="num"><b>'+nf(ma)+'</b><span class="pct">'+mp+'%</span></td></tr>';
+    }).join("")+"</tbody>";
+    host.innerHTML=hero
+      +'<div class="sum-section"><div class="sum-title"><span class="stag" style="background:var(--accent)"></span>Overall</div><div class="sum-cards sum-glyphcards">'+cards+'</div></div>'
+      +'<div class="sum-section"><div class="sum-title"><span class="stag" style="background:#6366f1"></span>Bifurcation by body type</div><div class="sum-tablewrap"><table class="sum-table">'+head+body+'</table></div><div class="sum-foot">Every ratio shows raw numbers (n/den). <b>CPs / NOC</b> &amp; <b>CPs / Agr</b> = planned CPs under bodies with that paperwork. Public &amp; Private are agreement-only.</div></div>'
+      +'<div class="sum-section"><div class="sum-title"><span class="stag" style="background:#0ea5e9"></span>Block-wise breakdown</div><div class="sum-tablewrap"><table class="sum-table">'+bHead+bBody+'</table></div></div>'
+      +'<div class="sum-section"><div class="sum-title"><span class="stag" style="background:'+T.machine+'"></span>RVM build-stage progress</div><div class="sc-chart">'+sc+'</div></div>'
+      +'<div class="sum-section"><div class="sum-title"><span class="stag" style="background:#b45309"></span>RVM deployment by block</div><div class="sum-tablewrap"><table class="sum-table">'+dHead+dBody+'</table></div></div>'
+      +'<div class="sum-section"><div class="sum-title"><span class="stag" style="background:#16a34a"></span>Network totals</div><div class="sum-cards">'+net+'</div></div>';
+    return;
+  }
+
+  // ══ TAB 2: VISUALS (v31 charts) ══════════════════════════════════════════
+  var nocPct=pct(ov.noc,ov.bodies),agrPct=pct(ov.agr,ov.bodies),macPct=pct(ov.machine,Math.max(1,UNITS.length));
+  var donutsHTML='<div class="sv-kpi-row">'
+    +'<div class="sv-kpi-cell">'+svgDonut(nocPct,T.noc,34)+'<div class="sv-kpi-v">'+ov.noc+' / '+ov.bodies+'</div><div class="sv-kpi-l">NOC received</div></div>'
+    +'<div class="sv-kpi-cell">'+svgDonut(agrPct,T.agreement,34)+'<div class="sv-kpi-v">'+ov.agr+' / '+ov.bodies+'</div><div class="sv-kpi-l">Agreement signed</div></div>'
+    +'<div class="sv-kpi-cell">'+svgDonut(macPct,T.machine,34)+'<div class="sv-kpi-v">'+ov.machine+' / '+UNITS.length+'</div><div class="sv-kpi-l">Machine installed</div></div>'
+    +'<div class="sv-kpi-cell">'+svgDonut(pct(ov.actual,ov.plan),"#6366f1",34)+'<div class="sv-kpi-v">'+ov.actual+' / '+ov.plan+'</div><div class="sv-kpi-l">CPs deployed</div></div>'
+    +'</div>';
+  var stageHTML=['shed','civil','electrical','cctv','machine'].map(function(k){
+    var cnt=UNITS.filter(function(u){return !!u[k];}).length;
+    var lbl={shed:"Shed",civil:"Civil work",electrical:"Electrical",cctv:"CCTV",machine:"Machine installed"}[k];
+    return '<div class="sv-stage-row"><span class="sv-stage-dot" style="background:'+T[k]+'"></span><span class="sv-stage-lbl">'+lbl+'</span>'+svgBar(cnt,UNITS.length,T[k],6)+'</div>';
+  }).join("");
+  var blockHTML=talukaNames.map(function(tal){
+    var A=AUTH.filter(function(a){return a.taluka===tal;}); if(!A.length) return "";
+    var nA=A.filter(function(a){return nocApplies(a)&&a.noc===true;}).length;
+    var aA=A.filter(function(a){return a.agreement;}).length;
+    var U5=UNITS.filter(function(u){var aa=authOf(u.authority);return aa&&aa.taluka===tal;});
+    var mA=U5.filter(function(u){return u.machine;}).length;
+    var col=TAL_COLORS[tal]||"#888";
+    return '<div class="sv-bk-row">'
+      +'<div class="sv-bk-name"><span class="sv-bk-dot" style="background:'+col+'"></span>'+tal+'</div>'
+      +'<div class="sv-bk-bars">'
+      +'<div style="display:flex;gap:4px;align-items:center;margin-bottom:3px"><div style="flex:1;height:6px;background:#eef0f4;border-radius:99px;overflow:hidden"><div style="width:'+pct(nA,A.length)+'%;height:100%;background:'+T.noc+';border-radius:99px"></div></div><span class="sv-bk-num">'+nA+'/'+A.length+' NOC</span></div>'
+      +'<div style="display:flex;gap:4px;align-items:center"><div style="flex:1;height:6px;background:#eef0f4;border-radius:99px;overflow:hidden"><div style="width:'+pct(aA,A.length)+'%;height:100%;background:'+T.agreement+';border-radius:99px"></div></div><span class="sv-bk-num">'+aA+'/'+A.length+' Agr</span></div>'
+      +(U5.length?('<div style="font-family:IBM Plex Mono,monospace;font-size:9px;color:#94a3b8;margin-top:3px">'+mA+'/'+U5.length+' machines</div>'):"")
+      +'</div></div>';
+  }).join("");
+  var typeHTML=["Panchayat","Municipality","CCP","Public","Private"].map(function(t){
+    var A2=AUTH.filter(function(a){return a.type===t;}); if(!A2.length) return "";
+    var n2=A2.filter(function(a){return nocApplies(a)&&a.noc===true;}).length;
+    var a2=A2.filter(function(a){return a.agreement;}).length;
+    var col=TYPE_COLOR[t]||"#888";
+    return '<div class="sv-type-row2"><div class="sv-type-head"><span class="sv-bk-dot" style="background:'+col+'"></span>'+t+'<span class="sv-type-ct">'+A2.length+'</span></div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">'
+      +'<div><div class="sv-type-pct" style="color:'+T.noc+'">'+pct(n2,A2.length)+'%</div><div class="sv-type-sub">'+n2+'/'+A2.length+' NOC</div></div>'
+      +'<div><div class="sv-type-pct" style="color:'+T.agreement+'">'+pct(a2,A2.length)+'%</div><div class="sv-type-sub">'+a2+'/'+A2.length+' Agr</div></div>'
+      +'</div></div>';
+  }).join("");
+  host.innerHTML=hero
+    +'<div class="sum-section"><div class="sum-title"><span class="stag" style="background:#6366f1"></span>Key metrics</div>'+donutsHTML+'</div>'
+    +'<div class="sum-section"><div class="sum-title"><span class="stag" style="background:#0d9488"></span>Block-wise NOC &amp; Agreement</div><div class="sv-block-grid">'+blockHTML+'</div></div>'
+    +'<div class="sum-section"><div class="sum-title"><span class="stag" style="background:'+T.machine+'"></span>RVM build stages</div><div class="sv-stage-grid">'+stageHTML+'</div></div>'
+    +'<div class="sum-section"><div class="sum-title"><span class="stag" style="background:#b45309"></span>By body type</div><div class="sv-type-grid">'+typeHTML+'</div></div>';
+}
 
 function renderMapLegend(){
   var el=document.getElementById("mapLegend"); if(!el) return;
   var items=[], title="";
-  if(viewMode==="authority"){
+  if(viewMode==="coverage"){
     title="Coverage";
     if(authStage==="noc") items=[["NOC received",STAGE_COLOR.noc]];
     else if(authStage==="agreement") items=[["Agreement signed",STAGE_COLOR.agreement]];
@@ -1016,48 +1692,142 @@ function renderMapLegend(){
     }).join("");
     html+='<span class="lg-item" style="color:#9aa1ab"><span class="lg-sw" style="background:#d4d8de"></span>Not yet / blocks</span>';
     el.innerHTML=html; el.style.display="flex";
-  } else {
-    title="Collection points";
-    items=[["NOC",STAGE_COLOR.noc],["Agreement",STAGE_COLOR.agreement],["Shed",STAGE_COLOR.shed],
-           ["Civil",STAGE_COLOR.civil],["Electrical",STAGE_COLOR.electrical],["Machine",STAGE_COLOR.machine],["CCTV",STAGE_COLOR.cctv]];
+  } else if(viewMode==="deployment"){
+    title="RVM Deployment";
+    items=[["Awaiting","#94a3b8"],["Shed",STAGE_COLOR.shed],["Civil",STAGE_COLOR.civil],
+           ["Electrical",STAGE_COLOR.electrical],["CCTV",STAGE_COLOR.cctv],["Machine",STAGE_COLOR.machine]];
     el.innerHTML='<span class="lg-title">'+title+'</span>'+items.map(function(it){
       return '<span class="lg-item"><span class="lg-sw round" style="background:'+it[1]+'"></span>'+it[0]+'</span>';
     }).join("");
+    el.style.display="flex";
+  } else {
+    // collection view - just show pin type legend
+    el.innerHTML='<span class="lg-title">Collection Points</span>'+
+      '<span class="lg-item"><span class="lg-sw round" style="background:#0d9488"></span>RVM</span>'+
+      '<span class="lg-item"><span class="lg-sw round" style="background:#ec4899"></span>RC</span>'+
+      '<span class="lg-item"><span class="lg-sw round" style="background:#b45309"></span>CPC</span>';
     el.style.display="flex";
   }
 }
 
 function renderMapStats(){
   var el=document.getElementById("mapStats"); if(!el) return;
-  // Pointer-style readout: shows only while a coverage stage is selected; removed otherwise.
-  if(viewMode!=="authority" || !authStage){ el.style.display="none"; return; }
-  var noc=authStat("noc"), agr=authStat("agreement");
-  var na=authAreaStat("noc"), aa=authAreaStat("agreement");
-  var mini='<div class="ms-mini">'+AUTH.length+' entities \u00b7 '+ulbAuths().length+' ULB \u00b7 '+noc.covered+' NOC \u00b7 '+agr.covered+' agreements</div>';
-  if(authStage==="both"){
-    el.style.borderLeftColor="#475569";
-    el.innerHTML='<div class="ms-eyebrow">Area coverage</div>'+
-      '<div class="ms-stage">NOC + Agreement</div>'+
-      '<div class="ms-dual">'+
+  // Coverage view: show area coverage stats
+  if(viewMode==="coverage"){
+    if(!authStage){ el.style.display="none"; return; }
+    var noc=authStat("noc"), agr=authStat("agreement");
+    var na=authAreaStat("noc"), aa=authAreaStat("agreement");
+    var mini='<div class="ms-mini">'+AUTH.length+' entities \u00b7 '+noc.covered+' NOC \u00b7 '+agr.covered+' agreements</div>';
+    if(authStage==="both"){
+      el.style.borderLeftColor="#475569";
+      el.innerHTML='<div class="ms-eyebrow">Area coverage</div>'+
+        '<div class="ms-stage">NOC + Agreement</div><div class="ms-dual">'+
         '<div class="ms-row"><span class="rp" style="color:'+STAGE_COLOR.noc+'">'+na.pct+'%</span><span class="rl">NOC area</span></div>'+
         '<div class="ms-bar"><span style="width:'+na.pct+'%;background:'+STAGE_COLOR.noc+'"></span></div>'+
-        '<div class="ms-row"><span class="rp" style="color:'+STAGE_COLOR.agreement+'">'+aa.pct+'%</span><span class="rl">Agreement area</span></div>'+
+        '<div class="ms-row"><span class="rp" style="color:'+STAGE_COLOR.agreement+'">'+aa.pct+'%</span><span class="rl">Agr area</span></div>'+
         '<div class="ms-bar"><span style="width:'+aa.pct+'%;background:'+STAGE_COLOR.agreement+'"></span></div>'+
-      '</div>'+
-      '<div class="ms-sub">of '+fmtKm(na.totalKm)+' km\u00b2 mapped GP + ULB area</div>'+mini;
-  } else {
-    var isN=authStage==="noc"; var s=isN?na:aa; var col=isN?STAGE_COLOR.noc:STAGE_COLOR.agreement;
-    el.style.borderLeftColor=col;
-    el.innerHTML='<div class="ms-eyebrow">Area coverage</div>'+
-      '<div class="ms-stage">'+(isN?"NOC received":"Agreement signed")+'</div>'+
-      '<div class="ms-hero" style="color:'+col+'">'+s.pct+'<span>%</span></div>'+
-      '<div class="ms-bar"><span style="width:'+s.pct+'%;background:'+col+'"></span></div>'+
-      '<div class="ms-sub">'+fmtKm(s.coveredKm)+' / '+fmtKm(s.totalKm)+' km\u00b2 of mapped GP + ULB area</div>'+mini;
+        '</div><div class="ms-sub">of '+fmtKm(na.totalKm)+' km² mapped area</div>'+mini;
+    } else {
+      var isN=authStage==="noc"; var sv=isN?na:aa; var col=isN?STAGE_COLOR.noc:STAGE_COLOR.agreement;
+      el.style.borderLeftColor=col;
+      el.innerHTML='<div class="ms-eyebrow">Area coverage</div>'+
+        '<div class="ms-stage">'+(isN?"NOC received":"Agreement signed")+'</div>'+
+        '<div class="ms-hero" style="color:'+col+'">'+sv.pct+'<span>%</span></div>'+
+        '<div class="ms-bar"><span style="width:'+sv.pct+'%;background:'+col+'"></span></div>'+
+        '<div class="ms-sub">'+fmtKm(sv.coveredKm)+' / '+fmtKm(sv.totalKm)+' km² mapped</div>'+mini;
+    }
+    el.style.display="block"; return;
   }
-  el.style.display="block";
+  // RVM Deployment view: show machine-stage progress
+  if(viewMode==="deployment"){
+    var tot=UNITS.length; if(!tot){ el.style.display="none"; return; }
+    var stages=[["machine","Machine",STAGE_COLOR.machine],["electrical","Electrical",STAGE_COLOR.electrical],
+                ["civil","Civil",STAGE_COLOR.civil],["shed","Shed",STAGE_COLOR.shed]];
+    var rows=stages.map(function(sv){
+      var cnt=UNITS.filter(function(u){return !!u[sv[0]];}).length;
+      var p=Math.round(cnt/tot*100);
+      return '<div class="ms-row" style="margin-top:6px">'+
+        '<span class="rp" style="color:'+sv[2]+';font-size:22px">'+p+'%</span>'+
+        '<span class="rl">'+sv[1]+'</span></div>'+
+        '<div class="ms-bar"><span style="width:'+p+'%;background:'+sv[2]+'"></span></div>';
+    }).join("");
+    el.style.borderLeftColor=STAGE_COLOR.machine;
+    el.innerHTML='<div class="ms-eyebrow">RVM Deployment</div>'+
+      '<div class="ms-stage">'+tot+' RVMs total</div>'+rows+
+      '<div class="ms-sub">'+UNITS.filter(function(u){return u.machine;}).length+' machines installed</div>';
+    el.style.display="block"; return;
+  }
+  // Collection Points view: machine installed % only
+  if(viewMode==="collection"){
+    var macCt=UNITS.filter(function(u){return u.machine;}).length;
+    var macP=UNITS.length?Math.round(macCt/UNITS.length*100):0;
+    el.style.borderLeftColor=STAGE_COLOR.machine;
+    el.innerHTML='<div class="ms-eyebrow">Machine installed</div>'+
+      '<div class="ms-hero" style="color:'+STAGE_COLOR.machine+'">'+macP+'<span>%</span></div>'+
+      '<div class="ms-bar"><span style="width:'+macP+'%;background:'+STAGE_COLOR.machine+'"></span></div>'+
+      '<div class="ms-sub">'+macCt+' / '+UNITS.length+' RVMs have machine installed</div>';
+    el.style.display="block"; return;
+  }
+  el.style.display="none";
 }
 
-function renderAll(){ applyView(); rebuildPins(); renderViewToggle(); renderDashboard(); renderStageLayers(); renderBaseLayers(); renderKpis(); renderTalukaDetail(); renderBodies(); renderMapLegend(); renderMapStats(); }
+function renderAll(){ applyView(); rebuildPins(); renderViewToggle(); renderLocLayers(); renderTopContext(); renderDashboard(); renderStageLayers(); renderBaseLayers(); renderKpis(); renderTalukaDetail(); renderBodies(); renderMapLegend(); renderMapStats(); var sp=document.getElementById("summaryPanel"); if(sp && sp.style.display!=="none") renderSummary(); }
+
+function renderLocLayers(){
+  var sec=document.getElementById("locSecH"), el=document.getElementById("locLayers");
+  if(!el) return;
+  if(viewMode!=="collection"){ if(sec) sec.style.display="none"; el.style.display="none"; return; }
+  if(sec) sec.style.display=""; el.style.display=""; el.innerHTML="";
+  var rows=[
+    ["RVM","Reverse vending machines",UNITS.length,'<div class="locbadge rvm" style="background:'+STAGE_COLOR.machine+'">'+glyphRVM()+'</div>'],
+    ["RC","Return centres",RC_UNITS.length,'<div class="locbadge rc">'+glyphRC()+'</div>'],
+    ["CPC","Collection &amp; processing centres",CPC_UNITS.length,'<div class="locbadge cpc">'+glyphCPC()+'</div>']
+  ];
+  rows.forEach(function(r){
+    var k=r[0], on=locTypeOn[k];
+    var row=document.createElement("div"); row.className="layer "+(on?"on":"off");
+    row.innerHTML='<div class="cb">'+checkSvg()+'</div>'+r[3]+'<div class="lname">'+r[1]+'</div><div class="lcount">'+r[2]+'</div>';
+    row.addEventListener("click",function(){
+      locTypeOn[k]=!locTypeOn[k]; rebuildPins(); renderLocLayers();
+    });
+    el.appendChild(row);
+  });
+  // Overlay options
+  var oh=document.createElement("div"); oh.className="grp-label"; oh.style.marginTop="12px";
+  oh.textContent="Block overlays"; el.appendChild(oh);
+  var overlays=[
+    ["blockNames","Block / panchayat names","#6366f1"],
+    ["noc","NOC status per block",STAGE_COLOR.noc],
+    ["agreement","Agreement per block",STAGE_COLOR.agreement],
+    ["machine","Machine installed %",STAGE_COLOR.machine]
+  ];
+  overlays.forEach(function(ov){
+    var ok=ov[0], on2=collOverlay[ok];
+    var orow=document.createElement("div"); orow.className="layer "+(on2?"on":"off");
+    orow.innerHTML='<div class="cb">'+checkSvg()+'</div><div class="swatch round" style="background:'+ov[2]+'"></div><div class="lname">'+ov[1]+'</div>';
+    orow.addEventListener("click",function(){
+      collOverlay[ok]=!collOverlay[ok];
+      refreshPanchayatStyles(); refreshMuniStyles(); rebuildLabels();
+      rebuildPins(); renderLocLayers();
+    });
+    el.appendChild(orow);
+  });
+  var note=document.createElement("div"); note.className="grp-label"; note.style.marginTop="9px";
+  note.textContent="Overlays shade & label blocks on the map.";
+  el.appendChild(note);
+  // Ownership / type filter
+  var th=document.createElement("div"); th.className="grp-label"; th.style.marginTop="12px";
+  th.textContent="Ownership filter"; el.appendChild(th);
+  [["Panchayat","#6366f1"],["Municipality","#f59e0b"],["CCP","#0d9488"],["Public","#22c55e"],["Private","#ec4899"]].forEach(function(tf){
+    var tk=tf[0], on3=collTypeFilter[tk];
+    var trow=document.createElement("div"); trow.className="layer "+(on3?"on":"off");
+    trow.innerHTML='<div class="cb">'+checkSvg()+'</div><div class="swatch round" style="background:'+tf[1]+'"></div><div class="lname">'+tk+'</div>';
+    trow.addEventListener("click",function(){
+      collTypeFilter[tk]=!collTypeFilter[tk]; rebuildPins(); renderLocLayers();
+    });
+    el.appendChild(trow);
+  });
+}
 
 /* ===================== CSV parsing ===================== */
 function csvToRows(text){
@@ -1088,16 +1858,21 @@ function headerAndBody(rows){ var hi=findHeaderRow(rows); return {headers:rows[h
 
 /* classify a tab: 'combined' (paperwork + units in one sheet) vs 'units' vs 'authority' */
 function classify(headers){
+  function hasCol(subs,excl){ return headers.some(function(h){ var hl=String(h||"").toLowerCase();
+    var hit=subs.some(function(z){return hl.indexOf(z)>=0;}); var ex=excl&&excl.some(function(z){return hl.indexOf(z)>=0;}); return hit&&!ex; }); }
   var lat=findCol(headers,["lat"])!=null, lng=findCol(headers,["lng","lon","long"])!=null;
   var purpose=findCol(headers,["purpose"])!=null;
   var build=findCol(headers,["shed"])||findCol(headers,["civil"])||findCol(headers,["electric"])||findCol(headers,["install"]);
   var unitId=findCol(headers,["unit_id","unit id","point_name","rvm_id"])!=null;
   var auth=findCol(headers,["authority","auth_name"])!=null;
-  var noc=findCol(headers,["noc"])!=null, agr=findCol(headers,["agreement","agree","mou","signed"])!=null;
+  // a real NOC/Agreement paperwork column, NOT a "Planned_CPs_NOC"-style planning column
+  var noc=hasCol(["noc"],["plan","cp"]), agr=hasCol(["agreement","agree","mou","signed"],["plan","cp"]);
+  var planc=findCol(headers,["planned"])!=null||findCol(headers,["plan_cp"])!=null||findCol(headers,["plan cp"])!=null||findCol(headers,["location_final"])!=null||findCol(headers,["finalis"])!=null||findCol(headers,["mail"])!=null||findCol(headers,["email"])!=null;
   var hasUnit=(lat&&lng)||unitId||build||purpose;
   var hasPaper=noc||agr;
-  if(hasPaper && hasUnit) return "combined";   // one sheet that has both paperwork and unit columns
+  if(hasPaper && hasUnit) return "combined";
   if(hasUnit) return "units";
+  if(planc && !noc && !agr) return "planning";    // data-points tab (location/mail/planned CPs)
   if(noc||agr||auth) return "authority";
   return "unknown";
 }
@@ -1115,9 +1890,10 @@ function applyCombinedSheet(rows){
   var cLat=findCol(H,["lat"]), cLng=findCol(H,["lng","lon","long"]);
   var cShed=findCol(H,["shed"]), cCiv=findCol(H,["civil"]), cEl=findCol(H,["electric","wiring","power"]), cMac=findCol(H,["machine","install","commission"]);
   var cCctv=findCol(H,["cctv","camera","surveillance"]);
+  var cLoc=findCol(H,["location_final","location final","loc final","finalis","finaliz"]), cMail=findCol(H,["mail","email"]), cPlan=findCol(H,["planned","plan_cp","plan cp","target cp","target"]), cPurp=findCol(H,["purpose","kind"]);
   if(cName==null) return {a:0,u:0};
   function gv(r,c){ if(c==null) return ""; var i=H.indexOf(c); return i<0?"":r[i]; }
-  var amap={}, aorder=[], units=[], rnd=mulberry32(55), rc=0;
+  var amap={}, aorder=[], units=[], rcs=[], cpcs=[], rnd=mulberry32(55), rc=0;
   hb.body.forEach(function(row){ rc++; if(!row||row.every(function(c){return c===""||c==null;})) return;
     var nm=String(gv(row,cName)||"").trim(); if(!nm) return; var key=normName(nm);
     var type = (cType!=null && String(gv(row,cType)).trim()!=="") ? titleType(gv(row,cType))
@@ -1127,24 +1903,31 @@ function applyCombinedSheet(rows){
     var agrVal = cAgr!=null && truthy(gv(row,cAgr));
     if(agrVal && nocVal===false) nocVal=true;            // agreement implies NOC where NOC applies
     var a=amap[key];
-    if(!a){ a={name:nm,type:type,taluka:tal||"",noc:nocVal,agreement:agrVal,lat:NaN,lng:NaN}; amap[key]=a; aorder.push(key); }
+    var locV=cLoc!=null&&truthy(gv(row,cLoc)), mailV=cMail!=null&&truthy(gv(row,cMail)), planV=cPlan!=null?(parseInt(gv(row,cPlan),10)||0):null;
+    if(!a){ a={name:nm,type:type,taluka:tal||"",noc:nocVal,agreement:agrVal,locationFinalised:locV,mailSent:mailV,plannedCPs:(planV!=null?planV:0),lat:NaN,lng:NaN}; amap[key]=a; aorder.push(key); }
     else { if(type!=="Other"&&a.type==="Other") a.type=type; if(!a.taluka&&tal) a.taluka=tal;
            if(a.type!=="Private"){ if(nocVal===true) a.noc=true; else if(a.noc==null) a.noc=nocVal; }
-           if(agrVal) a.agreement=true; }
+           if(agrVal) a.agreement=true; if(locV) a.locationFinalised=true; if(mailV) a.mailSent=true; if(planV!=null&&planV>a.plannedCPs) a.plannedCPs=planV; }
     var hasId=cId!=null && String(gv(row,cId)).trim()!=="";
     var lat=parseFloat(gv(row,cLat)), lng=parseFloat(gv(row,cLng)); var hasCoord=isFinite(lat)&&isFinite(lng);
     var buildAny=(cShed&&truthy(gv(row,cShed)))||(cCiv&&truthy(gv(row,cCiv)))||(cEl&&truthy(gv(row,cEl)))||(cMac&&truthy(gv(row,cMac)))||(cCctv&&truthy(gv(row,cCctv)));
+    var pu2=cPurp!=null?String(gv(row,cPurp)).toUpperCase():"";
+    var purp=(pu2.indexOf("CPC")>=0||pu2.indexOf("WAREHOUSE")>=0||pu2.indexOf("PROCESS")>=0)?"CPC":((pu2.indexOf("RC")>=0||pu2.indexOf("RETURN")>=0)?"RC":"RVM");
     if(hasId||hasCoord||buildAny){
       if(!hasCoord){ var base=bodyCentroid(nm); if(base){ lat=base.lat+(rnd()-0.5)*0.012; lng=base.lng+(rnd()-0.5)*0.012; } else return; }
-      var shed=cShed!=null&&truthy(gv(row,cShed)), civ=cCiv!=null&&truthy(gv(row,cCiv)), el=cEl!=null&&truthy(gv(row,cEl)), mac=cMac!=null&&truthy(gv(row,cMac)), cctv=cCctv!=null&&truthy(gv(row,cCctv));
-      var id=String(gv(row,cId)||(nm+" RVM "+rc)).trim();
+      var id=String(gv(row,cId)||(nm+" "+purp+" "+rc)).trim();
       if(/^test|dummy|sample|^xx/i.test(id)) return;
+      if(purp==="RC"){ rcs.push({unit_id:id,authority:nm,type:type,purpose:"RC",lat:lat,lng:lng,installed:true}); return; }
+      if(purp==="CPC"){ cpcs.push({unit_id:id,authority:nm,type:type,purpose:"CPC",lat:lat,lng:lng,installed:true}); return; }
+      var shed=cShed!=null&&truthy(gv(row,cShed)), civ=cCiv!=null&&truthy(gv(row,cCiv)), el=cEl!=null&&truthy(gv(row,cEl)), mac=cMac!=null&&truthy(gv(row,cMac)), cctv=cCctv!=null&&truthy(gv(row,cCctv));
       units.push({unit_id:id,authority:nm,type:type,purpose:"RVM",lat:lat,lng:lng,shed:!!shed,civil:!!civ,electrical:!!el,machine:!!mac,cctv:!!cctv,installed:!!mac});
     }
   });
   var arr=aorder.map(function(k){ var a=amap[k]; var bc=bodyCentroid(a.name); if(bc){ a.lat=bc.lat; a.lng=bc.lng; } return a; });
+  if(cPlan==null){ var pcnt={}; units.forEach(function(u){ var k=normName(u.authority); pcnt[k]=(pcnt[k]||0)+1; }); arr.forEach(function(a){ if(!a.plannedCPs) a.plannedCPs=pcnt[normName(a.name)]||0; }); }
+  arr.forEach(function(a){ a.plannedCPsNoc=(a.type!=="Private"&&a.type!=="Public"&&a.noc===true)?(a.plannedCPs||0):0; a.plannedCPsAgr=a.agreement?(a.plannedCPs||0):0; });
   if(arr.length){ AUTH=arr; indexAuth(); }
-  if(units.length){ UNITS=units; }
+  UNITS=units; RC_UNITS=rcs; CPC_UNITS=cpcs;
   return {a:arr.length,u:units.length};
 }
 
@@ -1154,6 +1937,7 @@ function applyAuthSheet(rows){
   var cType=findCol(H,["type","category","body"]);
   var cTal=findCol(H,["taluka","block","tehsil"]);
   var cNoc=findCol(H,["noc"]), cAgr=findCol(H,["agreement","agree","mou","signed"]);
+  var cLoc=findCol(H,["location_final","location final","loc final","finalis","finaliz"]), cMail=findCol(H,["mail","email"]), cPlan=findCol(H,["planned","plan_cp","plan cp","target cp","target"]);
   if(cName==null||(cNoc==null&&cAgr==null)) return 0;
   function gv(r,c){ if(c==null) return ""; var i=H.indexOf(c); return i<0?"":r[i]; }
   var arr=[], n=0;
@@ -1166,7 +1950,10 @@ function applyAuthSheet(rows){
     var agr = cAgr!=null && truthy(gv(row,cAgr));
     if(agr && noc===false) noc=true; // agreement implies NOC where NOC applies
     var pc2=bodyCentroid(nm);
-    arr.push({name:nm,type:type,taluka:tal||"",noc:noc,agreement:agr, lat:pc2?pc2.lat:NaN, lng:pc2?pc2.lng:NaN});
+    var locF=cLoc!=null?truthy(gv(row,cLoc)):(noc===true||agr);
+    var mailS=cMail!=null?truthy(gv(row,cMail)):(noc===true||agr);
+    var plan=cPlan!=null?(parseInt(gv(row,cPlan),10)||0):0;
+    arr.push({name:nm,type:type,taluka:tal||"",noc:noc,agreement:agr,locationFinalised:locF,mailSent:mailS,plannedCPs:plan,plannedCPsNoc:((type!=="Private"&&type!=="Public"&&noc===true)?plan:0),plannedCPsAgr:(agr?plan:0), lat:pc2?pc2.lat:NaN, lng:pc2?pc2.lng:NaN});
     n++; });
   if(n>0){ AUTH=arr; indexAuth(); }
   return n;
@@ -1183,28 +1970,54 @@ function applyUnitSheet(rows){
   var cShed=findCol(H,["shed"]), cCiv=findCol(H,["civil"]), cEl=findCol(H,["electric","wiring","power"]), cMac=findCol(H,["machine","install","commission"]);
   var cCctv=findCol(H,["cctv","camera","surveillance"]);
   function gv(r,c){ if(c==null) return ""; var i=H.indexOf(c); return i<0?"":r[i]; }
-  var arr=[], rnd=mulberry32(55), rc=0;
+  var arr=[], rcarr=[], cpcarr=[], rnd=mulberry32(55), rc=0;
   hb.body.forEach(function(row){ rc++; if(!row||row.every(function(c){return c===""||c==null;})) return;
     var auth=String(gv(row,cAuth)||"").trim();
-    var purpose = cPurp!=null? (String(gv(row,cPurp)).toUpperCase().indexOf("RC")>=0||String(gv(row,cPurp)).toLowerCase().indexOf("return")>=0?"RC":"RVM") : "RVM";
+    var pu=cPurp!=null?String(gv(row,cPurp)).toUpperCase():"";
+    var purpose=(pu.indexOf("CPC")>=0||pu.indexOf("WAREHOUSE")>=0||pu.indexOf("PROCESS")>=0)?"CPC":((pu.indexOf("RC")>=0||pu.indexOf("RETURN")>=0)?"RC":"RVM");
     var type = cType!=null? titleType(gv(row,cType)) : ((authOf(auth)&&authOf(auth).type)||(MUNI_CENTROID_NORM[normName(auth)]?"Municipality":(panchCentroid(auth)?"Panchayat":"Other")));
     var tal=normTaluka(gv(row,cTal)); var a=authOf(auth);
     var lat=parseFloat(gv(row,cLat)), lng=parseFloat(gv(row,cLng));
     if(isNaN(lat)||isNaN(lng)){ var base=a&&isFinite(a.lat)?a:bodyCentroid(auth); if(base){ lat=base.lat+(rnd()-0.5)*0.012; lng=base.lng+(rnd()-0.5)*0.012; tal=tal||base.taluka; } else { return; } }
     if(!tal&&a) tal=a.taluka;
     var shed,civ,el,mac,cctv,installed;
-    if(purpose==="RC"){ shed=civ=el=cctv=null; installed = (cMac!=null&&truthy(gv(row,cMac)))||truthy(gv(row,findCol(H,["installed"])||"")); mac=installed; }
+    if(purpose!=="RVM"){ shed=civ=el=cctv=null; installed = (cMac!=null&&truthy(gv(row,cMac)))||truthy(gv(row,findCol(H,["installed"])||"")); mac=installed; }
     else {
       shed=cShed!=null&&truthy(gv(row,cShed)); civ=cCiv!=null&&truthy(gv(row,cCiv)); el=cEl!=null&&truthy(gv(row,cEl)); mac=cMac!=null&&truthy(gv(row,cMac)); cctv=cCctv!=null&&truthy(gv(row,cCctv));
       installed=mac;  // each stage counted exactly as marked (no roll-up)
     }
-    if(purpose==="RC") return;   // RC removed from this build
     var id=String(gv(row,cId)||auth||(purpose+" "+rc)).trim();
     if(/^test|dummy|sample|^xx/i.test(id)) return;
+    if(purpose==="RC"){ rcarr.push({unit_id:id,authority:auth,type:type,purpose:"RC",lat:lat,lng:lng,installed:!!installed}); return; }
+    if(purpose==="CPC"){ cpcarr.push({unit_id:id,authority:auth,type:type,purpose:"CPC",lat:lat,lng:lng,installed:!!installed}); return; }
     arr.push({unit_id:id,authority:auth,type:type,purpose:"RVM",lat:lat,lng:lng,shed:!!shed,civil:!!civ,electrical:!!el,machine:!!mac,cctv:!!cctv,installed:!!installed});
   });
-  if(arr.length){ UNITS=arr; }
-  return arr.length;
+  if(arr.length||rcarr.length||cpcarr.length){ UNITS=arr; RC_UNITS=rcarr; CPC_UNITS=cpcarr; }
+  return arr.length+rcarr.length+cpcarr.length;
+}
+
+/* Planning / data-points tab: merges location, mail, and planned CPs (overall, per-NOC, per-agreement) into existing authorities by name. */
+function applyPlanningSheet(rows){
+  var hb=headerAndBody(rows), H=hb.headers;
+  var cName=findCol(H,["authority","auth_name","name","vp_name","vp name","panchayat","gram"]);
+  if(cName==null) return 0;
+  var cLoc=findCol(H,["location_final","location final","loc final","finalis","finaliz"]);
+  var cMail=findCol(H,["mail","email"]);
+  var cPlan=findCol(H,["planned_cps","planned cps","plan_cps","plan cps","planned","plan cp","target cp"]);
+  var cNoc=findCol(H,["planned_cps_noc","planned cps noc","plan_noc","plan noc","cp_noc","cps_noc","noc_cp","per noc","noc plan"]);
+  var cAgr=findCol(H,["planned_cps_agr","planned cps agr","planned_cps_agreement","planned cps agreement","plan_agr","plan agr","cp_agr","cps_agr","per agr","agreement plan","agr plan"]);
+  function gv(r,c){ if(c==null) return ""; var i=H.indexOf(c); return i<0?"":r[i]; }
+  var n=0;
+  hb.body.forEach(function(row){ if(!row) return; var nm=String(gv(row,cName)||"").trim(); if(!nm) return;
+    var a=authOf(nm); if(!a) return;
+    if(cLoc!=null) a.locationFinalised=truthy(gv(row,cLoc));
+    if(cMail!=null) a.mailSent=truthy(gv(row,cMail));
+    if(cPlan!=null){ var p=parseInt(gv(row,cPlan),10); if(!isNaN(p)) a.plannedCPs=p; }
+    if(cNoc!=null){ var pn=parseInt(gv(row,cNoc),10); if(!isNaN(pn)) a.plannedCPsNoc=pn; }
+    if(cAgr!=null){ var pa=parseInt(gv(row,cAgr),10); if(!isNaN(pa)) a.plannedCPsAgr=pa; }
+    n++;
+  });
+  return n;
 }
 
 /* ===================== Sheet ingestion ===================== */
@@ -1215,6 +2028,7 @@ function ingestText(t,srcLabel){
   if(kind==="combined"){ var r=applyCombinedSheet(rows); if(r.a>0){ renderAll(); statusEl.innerHTML=(srcLabel||"Loaded")+" \u00b7 <b>"+r.a+"</b> authorities \u00b7 <b>"+r.u+"</b> RVM \u00b7 "+now+(autoUrl?" \u00b7 auto on":""); return true; } }
   if(kind==="units"){ var n=applyUnitSheet(rows); if(n>0){ renderAll(); statusEl.innerHTML=(srcLabel||"Loaded")+" \u00b7 Units tab: <b>"+n+"</b> RVM \u00b7 "+now+(autoUrl?" \u00b7 auto on":""); return true; } }
   else if(kind==="authority"){ var p=applyAuthSheet(rows); if(p>0){ renderAll(); statusEl.innerHTML=(srcLabel||"Loaded")+" \u00b7 Authorities tab: <b>"+p+"</b> \u00b7 "+now+(autoUrl?" \u00b7 auto on":""); return true; } }
+  else if(kind==="planning"){ var m=applyPlanningSheet(rows); if(m>0){ renderAll(); statusEl.innerHTML=(srcLabel||"Loaded")+" \u00b7 Planning tab merged: <b>"+m+"</b> \u00b7 "+now; return true; } }
   throw new Error("no usable rows");
 }
 
@@ -1242,19 +2056,27 @@ function loadOneUrl(url,onDone){ var cands=gsheetCsvUrls(url); if(!cands.length)
 /* Ingest a whole workbook (all tabs). Authorities/Combined applied before Units so unit
    rows can inherit type/taluka/coords from their authority. Returns true if anything loaded. */
 function ingestWorkbook(wb, label){
-  var authRows=null, unitRows=null, combinedRows=null;
+  var authRows=null, unitRows=null, combinedRows=null, planRows=null;
   (wb.SheetNames||[]).forEach(function(sn){
     var rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,defval:""});
     var k=classify(headerAndBody(rows).headers);
     if(k==="combined" && !combinedRows) combinedRows=rows;
     else if(k==="authority" && !authRows) authRows=rows;
     else if(k==="units" && !unitRows) unitRows=rows;
+    else if(k==="planning" && !planRows) planRows=rows;
   });
   var la=0, lu=0;
   if(authRows){ la=applyAuthSheet(authRows)||0; }
   if(unitRows){ lu=applyUnitSheet(unitRows)||0; }
   if(!authRows && !unitRows && combinedRows){ var r=applyCombinedSheet(combinedRows); la=r.a; lu=r.u; }
-  if(la||lu){ renderAll(); statusEl.innerHTML=(label||"Loaded")+" \u00b7 <b>"+la+"</b> authorities \u00b7 <b>"+lu+"</b> RVM \u00b7 "+new Date().toLocaleTimeString()+(autoUrl?" \u00b7 auto on":""); return true; }
+  var planApplied=false;
+  if(planRows && AUTH.length){ planApplied = (applyPlanningSheet(planRows)>0); }
+  if(la||lu){
+    var pc={}; UNITS.forEach(function(u){ var k=normName(u.authority); pc[k]=(pc[k]||0)+1; });
+    AUTH.forEach(function(a){ if(!a.plannedCPs) a.plannedCPs=pc[normName(a.name)]||0; });
+    if(!planApplied){ AUTH.forEach(function(a){ if(!a.plannedCPsNoc && nocApplies(a)&&a.noc) a.plannedCPsNoc=a.plannedCPs; if(!a.plannedCPsAgr && a.agreement) a.plannedCPsAgr=a.plannedCPs; }); }
+  }
+  if(la||lu){ renderAll(); statusEl.innerHTML=(label||"Loaded")+" \u00b7 <b>"+la+"</b> authorities \u00b7 <b>"+lu+"</b> RVM"+(CPC_UNITS.length?(" \u00b7 "+CPC_UNITS.length+" CPC"):"")+" \u00b7 "+new Date().toLocaleTimeString()+(autoUrl?" \u00b7 auto on":""); return true; }
   return false;
 }
 function extractSheetId(u){ var m=String(u||"").match(/\/spreadsheets\/d\/(?:e\/)?([a-zA-Z0-9-_]{20,})/); return m?m[1]:null; }
@@ -1314,8 +2136,12 @@ document.getElementById("autoBtn").addEventListener("click",function(){ var btn=
 document.getElementById("detachBtn").addEventListener("click",function(){ lsDel(KEY_SHEET);
   if(autoTimer){ clearInterval(autoTimer); autoTimer=null; autoUrl=null; document.getElementById("autoBtn").textContent="Auto: Off"; }
   document.getElementById("sheetUrl").value="";
-  AUTH=AUTH_SEED.map(function(a){ return {name:a.name,type:a.type,taluka:a.taluka||"",noc:a.noc,agreement:!!a.agreement,lat:a.lat,lng:a.lng}; });
-  UNITS=UNIT_SEED.filter(function(u){ return String(u.purpose).toUpperCase()!=="RC"; }).map(function(u){ return {unit_id:u.unit_id,authority:u.authority,type:u.type,purpose:"RVM",lat:u.lat,lng:u.lng,shed:!!u.shed,civil:!!u.civil,electrical:!!u.electrical,machine:!!u.machine,cctv:!!u.cctv,installed:!!u.installed}; });
+  var planCount={}; UNIT_SEED.forEach(function(u){ if(String(u.purpose||"RVM").toUpperCase()==="RVM"){ var k=normName(u.authority); planCount[k]=(planCount[k]||0)+1; } });
+  AUTH=AUTH_SEED.map(function(a){ var k=normName(a.name), plan=planCount[k]||0, ap=(a.type!=="Private"&&a.type!=="Public"); return {name:a.name,type:a.type,taluka:a.taluka||"",noc:a.noc,agreement:!!a.agreement,locationFinalised:plan>0,mailSent:(a.noc===true||!!a.agreement||plan>0),plannedCPs:plan,plannedCPsNoc:((ap&&a.noc===true)?plan:0),plannedCPsAgr:(a.agreement?plan:0),lat:a.lat,lng:a.lng}; });
+  var P=function(p){ return String(p||"RVM").toUpperCase(); };
+  UNITS=UNIT_SEED.filter(function(u){ return P(u.purpose)==="RVM"; }).map(function(u){ return {unit_id:u.unit_id,authority:u.authority,type:u.type,purpose:"RVM",lat:u.lat,lng:u.lng,shed:!!u.shed,civil:!!u.civil,electrical:!!u.electrical,machine:!!u.machine,cctv:!!u.cctv,installed:!!u.installed}; });
+  RC_UNITS=UNIT_SEED.filter(function(u){ return P(u.purpose)==="RC"; }).map(function(u){ return {unit_id:u.unit_id,authority:u.authority,type:u.type,purpose:"RC",lat:u.lat,lng:u.lng,installed:!!u.installed}; });
+  CPC_UNITS=UNIT_SEED.filter(function(u){ return P(u.purpose)==="CPC"; }).map(function(u){ return {unit_id:u.unit_id,authority:u.authority,type:u.type,purpose:"CPC",lat:u.lat,lng:u.lng,installed:!!u.installed}; });
   indexAuth(); renderAll(); statusEl.innerHTML="Detached. Showing <b>sample data</b> again."; });
 
 /* File drop */
@@ -1340,6 +2166,15 @@ function wireCollapsers(){ document.querySelectorAll(".section-h.collapsible").f
 
 wireCollapsers();
 (function(){ var bs=document.getElementById("bodySearch"); if(bs) bs.addEventListener("input", renderBodies); })();
+/* top-nav tabs: Rollout Map  |  Summary */
+(function(){
+  var btns=document.querySelectorAll(".topbtn"), mapApp=document.getElementById("mapApp"), sumP=document.getElementById("summaryPanel");
+  btns.forEach(function(b){ b.addEventListener("click",function(){
+    btns.forEach(function(x){ x.classList.remove("active"); }); b.classList.add("active");
+    if(b.getAttribute("data-tab")==="summary"){ mapApp.style.display="none"; sumP.style.display="block"; renderSummary(); }
+    else { sumP.style.display="none"; mapApp.style.display="flex"; if(window.map && map.invalidateSize) setTimeout(function(){ map.invalidateSize(); },30); }
+  }); });
+})();
 (function boot(){
   var u=lsGet(KEY_SHEET);
   var inp=document.getElementById("sheetUrl"); if(inp) inp.value=u;
