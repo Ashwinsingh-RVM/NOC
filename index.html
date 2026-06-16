@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Orbitron:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
@@ -19,8 +19,8 @@
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
-body{font-family:"IBM Plex Sans",sans-serif;color:var(--ink);background:var(--bg);overflow:hidden}
-.topnav{height:46px;display:flex;align-items:center;gap:16px;padding:0 18px;background:var(--panel);border-bottom:1px solid var(--hair);box-shadow:var(--shadow);position:relative;z-index:30}
+body{font-family:"Poppins","IBM Plex Sans",sans-serif;color:var(--ink);background:var(--bg);overflow:hidden}
+.topnav{height:46px;display:flex;align-items:center;gap:16px;padding:0 18px;background:var(--panel);border-bottom:1.5px solid var(--hair);box-shadow:var(--shadow);position:relative;z-index:30}
 .topnav-brand{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:600}
 .topnav-tabs{display:flex;gap:4px}
 .topbtn{appearance:none;border:1px solid transparent;background:transparent;font:inherit;font-size:13px;font-weight:600;color:var(--muted);padding:6px 16px;border-radius:8px;cursor:pointer}
@@ -30,10 +30,10 @@ body{font-family:"IBM Plex Sans",sans-serif;color:var(--ink);background:var(--bg
 /* ---------- Executive summary ---------- */
 .summary{height:calc(100vh - 46px);overflow-y:auto;padding:0 0 64px;background:var(--bg)}
 .sum-hero{background:linear-gradient(120deg,#0d9488 0%,#0b7268 55%,#155e63 100%);color:#fff;padding:26px 28px 24px;box-shadow:0 8px 24px rgba(13,148,136,.18)}
-.sum-h{font-family:"Orbitron","IBM Plex Sans",sans-serif;font-size:24px;font-weight:700;letter-spacing:.01em;color:#fff}
+.sum-h{font-family:"Orbitron","Poppins","IBM Plex Sans",sans-serif;font-size:24px;font-weight:700;letter-spacing:.01em;color:#fff}
 .sum-chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:13px}
 .sum-chips .chip{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:5px 13px;font-size:12px;backdrop-filter:blur(2px)}
-.sum-chips .chip b{font-family:"Orbitron","IBM Plex Sans",sans-serif;font-weight:700;margin-right:4px}
+.sum-chips .chip b{font-family:"Orbitron","Poppins","IBM Plex Sans",sans-serif;font-weight:700;margin-right:4px}
 .sum-section{background:var(--panel);border:1px solid var(--hair);border-radius:16px;padding:18px 20px;margin:18px 26px 0;box-shadow:var(--shadow)}
 .sum-title{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:15px;font-weight:600;display:flex;align-items:center;gap:9px}
 .sum-title .stag{width:11px;height:11px;border-radius:4px}
@@ -42,13 +42,13 @@ body{font-family:"IBM Plex Sans",sans-serif;color:var(--ink);background:var(--bg
 .sum-card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(20,25,35,.09)}
 .sum-card .sum-ic{position:absolute;top:11px;right:11px;width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;background:var(--ac,var(--accent));opacity:.9}
 .sum-card .sum-ic svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:1.9;stroke-linejoin:round;stroke-linecap:round}
-.sum-card .v{font-family:"Orbitron","IBM Plex Sans",sans-serif;font-size:28px;font-weight:700;line-height:1;color:#0a0e1a}
+.sum-card .v{font-family:"Orbitron","Poppins",sans-serif;font-size:28px;font-weight:700;line-height:1;color:#060a14}
 .sum-card .l{font-size:11.5px;color:var(--muted);margin-top:7px;line-height:1.25;font-weight:500}
 .sum-card .s{font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--ac,var(--accent));margin-top:5px;letter-spacing:.01em}
 .sum-glyphcards .sum-card{min-height:96px}
 .sum-tablewrap{overflow-x:auto;border:1px solid var(--hair);border-radius:11px}
 .sum-table{width:100%;border-collapse:collapse;font-size:13px;min-width:860px}
-.sum-table th,.sum-table td{padding:11px 12px;text-align:center;border-bottom:1px solid var(--hair2);white-space:nowrap}
+.sum-table th,.sum-table td{padding:11px 12px;text-align:center;border-bottom:1.5px solid #d1d9e0;white-space:nowrap}
 .sum-table thead th{font-family:"IBM Plex Mono",monospace;font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:#334155;font-weight:700;background:#f1f5f9;position:sticky;top:0}
 .sum-table th:first-child,.sum-table td:first-child{text-align:left}
 .sum-table tbody tr:nth-child(even){background:#fafbfc}
@@ -165,7 +165,7 @@ h1.title{font-family:"Orbitron",sans-serif;font-weight:700;font-size:18px;letter
 .badge{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:12px;color:#374151;
   background:#fff;border:1.5px solid #cbd0d8;border-radius:50%;width:30px;height:30px;
   display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,.18)}
-.leaflet-popup-content{font-family:"IBM Plex Sans",sans-serif;font-size:12px;margin:11px 13px;line-height:1.55}
+.leaflet-popup-content{font-family:"Poppins","IBM Plex Sans",sans-serif;font-size:12px;margin:11px 13px;line-height:1.55}
 .leaflet-popup-content .pn{font-family:"Orbitron",sans-serif;font-weight:600;font-size:13px;margin-bottom:4px}
 .leaflet-popup-content .pt{font-family:"IBM Plex Mono",monospace;font-size:10px;color:#6b7280}
 .pchip{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;
@@ -210,7 +210,7 @@ h1.title{font-family:"Orbitron",sans-serif;font-weight:700;font-size:18px;letter
 }
 /* Big % hero — dominant, in block color */
 .ol-big-pct{
-  font-family:"Orbitron","IBM Plex Sans",sans-serif;
+  font-family:"Orbitron","Poppins","IBM Plex Sans",sans-serif;
   font-weight:900;line-height:1;
   opacity:0.94;
   text-shadow:0 2px 12px rgba(0,0,0,.22),0 0 18px rgba(255,255,255,.40);
@@ -228,14 +228,14 @@ h1.title{font-family:"Orbitron",sans-serif;font-weight:700;font-size:18px;letter
 
 /* top context stats (shown next to brand) */
 .topnav-context{display:flex;align-items:center;gap:12px;margin-left:4px;flex:1;min-width:0}
-.tc-v{font-family:"Orbitron","IBM Plex Sans",sans-serif;font-weight:700;font-size:13px;color:var(--ink);margin-right:2px}
+.tc-v{font-family:"Orbitron","Poppins","IBM Plex Sans",sans-serif;font-weight:700;font-size:13px;color:var(--ink);margin-right:2px}
 .tc-l{font-family:"IBM Plex Mono",monospace;font-size:9.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-right:10px}
 
 
 /* panchayat + coverage UI */
 .panchTip{border-radius:7px !important;border:1px solid #e6e8ec !important;
   box-shadow:0 2px 8px rgba(0,0,0,.12) !important;padding:6px 10px !important;
-  font-family:"IBM Plex Sans",sans-serif !important;background:#fff !important}
+  font-family:"Poppins","IBM Plex Sans",sans-serif !important;background:#fff !important}
 .covrow{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;cursor:pointer;
   user-select:none;transition:background .12s;border:1px solid var(--hair);margin-bottom:7px;background:#fbfcfd}
 .covrow:hover{background:var(--hair2)}
@@ -386,7 +386,7 @@ h1.title{font-family:"Orbitron",sans-serif;font-weight:700;font-size:18px;letter
 
 .maplegend .lg-title{font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.1em;
   text-transform:uppercase;color:var(--faint);margin-right:2px}
-.maplegend .lg-item{display:flex;align-items:center;gap:6px;font-family:"IBM Plex Sans",sans-serif;
+.maplegend .lg-item{display:flex;align-items:center;gap:6px;font-family:"Poppins","IBM Plex Sans",sans-serif;
   font-size:11px;font-weight:600;color:var(--ink)}
 .maplegend .lg-sw{width:13px;height:13px;border-radius:4px;border:1.5px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.18)}
 .maplegend .lg-sw.round{border-radius:50%}
@@ -413,9 +413,9 @@ h1.title{font-family:"Orbitron",sans-serif;font-weight:700;font-size:18px;letter
 .sv-dl-btn:hover{background:rgba(255,255,255,.22)}
 .sv-kpi-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:16px;padding:4px 0 8px}
 .sv-kpi-cell{display:flex;flex-direction:column;align-items:center;gap:5px}
-.sv-kpi-v{font-family:"Orbitron","IBM Plex Sans",sans-serif;font-size:13px;font-weight:700;color:var(--ink);text-align:center}
+.sv-kpi-v{font-family:"Orbitron","Poppins","IBM Plex Sans",sans-serif;font-size:13px;font-weight:700;color:var(--ink);text-align:center}
 .sv-kpi-l{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--muted);text-align:center;letter-spacing:.03em}
-.sv-kpi-bignum{font-family:"Orbitron","IBM Plex Sans",sans-serif;font-size:36px;font-weight:700;line-height:1;text-align:center}
+.sv-kpi-bignum{font-family:"Orbitron","Poppins","IBM Plex Sans",sans-serif;font-size:36px;font-weight:700;line-height:1;text-align:center}
 .sv-stage-grid{display:flex;flex-direction:column;gap:10px;padding:2px 0}
 .sv-stage-row{display:grid;grid-template-columns:10px 110px 1fr;align-items:center;gap:10px}
 .sv-stage-dot{width:10px;height:10px;border-radius:50%;flex:none}
@@ -430,7 +430,7 @@ h1.title{font-family:"Orbitron",sans-serif;font-weight:700;font-size:18px;letter
 .sv-type-row2{border:1px solid var(--hair);border-radius:10px;padding:12px 14px}
 .sv-type-head{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--ink);margin-bottom:10px}
 .sv-type-ct{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--muted)}
-.sv-type-pct{font-family:"Orbitron","IBM Plex Sans",sans-serif;font-size:18px;font-weight:700;line-height:1}
+.sv-type-pct{font-family:"Orbitron","Poppins","IBM Plex Sans",sans-serif;font-size:18px;font-weight:700;line-height:1}
 .sv-type-sub{font-family:"IBM Plex Mono",monospace;font-size:9px;color:var(--muted);margin-top:2px}
 
 /* left-side coverage panel overlaid on the map (empty sea area) */
@@ -457,6 +457,16 @@ h1.title{font-family:"Orbitron",sans-serif;font-weight:700;font-size:18px;letter
   .mapstats .ms-row .rp{font-size:22px}
 }
 
+/* ── Poppins global + contrast improvements ── */
+body,button,input,select,.sum-card,.sum-table,.kp,.sc-val,.sc-label,.sv-kpi-v,.sv-kpi-l,.ms-eyebrow,.ms-stage,.ms-sub,.ms-hero,.ms-mini,.grp-label,.lname,.lcount,.dsec,.typerow,.tname2,.tnums,.topnav-brand,.topnav-context,.tc-v,.tc-l{font-family:"Poppins","IBM Plex Sans",sans-serif!important}
+.sum-card{border:2px solid #b8c4d0!important;box-shadow:0 2px 8px rgba(0,0,0,.09)!important}
+.sum-table thead th{color:#1e293b!important;font-weight:700!important;background:#e8edf5!important;border-bottom:2px solid #9eafc0!important}
+.sum-table td{border-bottom:1.5px solid #d0dae4!important;color:#060a14!important}
+.sum-table .num{color:#060a14!important;font-weight:700!important}
+.map-stats{border:2px solid var(--ink)!important;box-shadow:0 4px 16px rgba(0,0,0,.18)!important}
+.sum-section{border:1.5px solid #c8d0db!important}
+.ms-hero{font-family:"Orbitron","Poppins",sans-serif!important}
+.sc-val{color:#060a14!important;font-weight:700!important}
 </style>
 </head>
 <body>
@@ -1433,9 +1443,11 @@ function summaryFor(types){
   var A = AUTH.filter(function(a){ return filterTypes.indexOf(a.type)>=0; });
   var keyset={}; A.forEach(function(a){ keyset[normName(a.name)]=1; });
   var U_entity = UNITS.filter(function(u){ return keyset[normName(u.authority)]; });
-  // Machine: count across ALL units regardless of type (deployment truth)
-  var allKeySet = types ? keyset : null; // when no type filter, use ALL units
-  var U_all = types ? U_entity : UNITS;
+  // Machine: ALL units regardless of type when no filter; for type-specific rows,
+  // count units belonging to ANY authority of that type (including CCP+Private)
+  var U_all = types
+    ? UNITS.filter(function(u){ var a=authOf(u.authority); return a && filterTypes.indexOf(a.type)>=0; })
+    : UNITS;  // null types = all units (global total)
   var blocks={}, loc=0,mail=0,noc=0,agr=0,plan=0,planNoc=0,planAgr=0;
   A.forEach(function(a){
     if(a.taluka) blocks[a.taluka]=1;
@@ -1528,8 +1540,7 @@ function renderSummary(){
       card(nf(ov.cpNoc),"CPs as per NOC",nf(ov.cpNoc)+" of "+nf(ov.plan)+" planned CPs \u00b7 "+ov.cpNocPct+"%",T.noc),
       card(nf(ov.cpAgr),"CPs as per agreement",nf(ov.cpAgr)+" of "+nf(ov.plan)+" planned CPs \u00b7 "+ov.cpAgrPct+"%",T.agreement),
       card(nf(ov.machine),"Machine installed",
-        "vs Plan: "+nf(ov.machine)+"/"+nf(ov.plan)+" \u00b7 "+Math.round(ov.machine/Math.max(1,ov.plan)*100)+"%" 
-        +" \u00b7 vs Agr: "+Math.round(ov.machine/Math.max(1,ov.agr)*100)+"%"
+        nf(ov.machine)+"/"+nf(ov.agr)+" agreements \u00b7 "+Math.round(ov.machine/Math.max(1,ov.agr)*100)+"%"
       ,"#15803d")
     ].join("");
     var cols=["Category","Blocks","Bodies","Loc. final","Mail sent","NOC","Agreement","Plan CPs","Actual CPs","CPs / NOC","CPs / Agr","Machine"];
@@ -1630,13 +1641,13 @@ function renderSummary(){
 
   // ══ TAB 2: VISUALS (v31 charts) ══════════════════════════════════════════
   var nocPct=pct(ov.noc,ov.bodies),agrPct=pct(ov.agr,ov.bodies);
-  var macVsPlanPct=pct(ov.machine,ov.plan),macVsAgrPct=pct(ov.machine,ov.agr);
+  var macVsAgrPct=pct(ov.machine,ov.agr);
   var donutsHTML='<div class="sv-kpi-row">'
     +'<div class="sv-kpi-cell">'+svgDonut(nocPct,T.noc,34)+'<div class="sv-kpi-v">'+ov.noc+' / '+ov.bodies+'</div><div class="sv-kpi-l">NOC received</div></div>'
     +'<div class="sv-kpi-cell">'+svgDonut(agrPct,T.agreement,34)+'<div class="sv-kpi-v">'+ov.agr+' / '+ov.bodies+'</div><div class="sv-kpi-l">Agreement signed</div></div>'
-    +'<div class="sv-kpi-cell"><div class="sv-kpi-bignum" style="color:'+T.machine+'">'+ov.machine+'</div>'
-    +'<div class="sv-kpi-v" style="font-size:11px">vs Plan '+ov.machine+'/'+ov.plan+' \u00b7 '+macVsPlanPct+'%</div>'
-    +'<div class="sv-kpi-v" style="font-size:11px">vs Agr '+ov.machine+'/'+ov.agr+' \u00b7 '+macVsAgrPct+'%</div>'
+    +'<div class="sv-kpi-cell">'+svgDonut(macVsAgrPct,T.machine,34)
+    +'<div class="sv-kpi-v"><b style="font-size:16px;font-family:Poppins,sans-serif;font-weight:700;color:#060a14">'+ov.machine+'</b></div>'
+    +'<div class="sv-kpi-v" style="font-size:11px">'+ov.machine+' / '+ov.agr+' agreements</div>'
     +'<div class="sv-kpi-l">Machine installed</div></div>'
 
     +'</div>';
@@ -1738,14 +1749,16 @@ function renderMapStats(){
     }
     el.style.display="block"; return;
   }
-  // RVM Deployment view: show machine-stage progress
+  // RVM Deployment view: machine % = installed/plannedCPs; others = /total RVMs
   if(viewMode==="deployment"){
     var tot=UNITS.length; if(!tot){ el.style.display="none"; return; }
+    var totPlanDep=AUTH.reduce(function(t,a){return t+(a.plannedCPs||0);},0);
     var stages=[["machine","Machine",STAGE_COLOR.machine],["electrical","Electrical",STAGE_COLOR.electrical],
                 ["civil","Civil",STAGE_COLOR.civil],["shed","Shed",STAGE_COLOR.shed]];
     var rows=stages.map(function(sv){
       var cnt=UNITS.filter(function(u){return !!u[sv[0]];}).length;
-      var p=Math.round(cnt/tot*100);
+      var denom=(sv[0]==="machine"&&totPlanDep)?totPlanDep:tot;
+      var p=Math.round(cnt/denom*100);
       return '<div class="ms-row" style="margin-top:6px">'+
         '<span class="rp" style="color:'+sv[2]+';font-size:22px">'+p+'%</span>'+
         '<span class="rl">'+sv[1]+'</span></div>'+
