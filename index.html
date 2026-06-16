@@ -42,30 +42,30 @@ body{font-family:"IBM Plex Sans",sans-serif;color:var(--ink);background:var(--bg
 .sum-card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(20,25,35,.09)}
 .sum-card .sum-ic{position:absolute;top:11px;right:11px;width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;background:var(--ac,var(--accent));opacity:.9}
 .sum-card .sum-ic svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:1.9;stroke-linejoin:round;stroke-linecap:round}
-.sum-card .v{font-family:"Orbitron","IBM Plex Sans",sans-serif;font-size:25px;font-weight:700;line-height:1.05;color:var(--ink)}
+.sum-card .v{font-family:"Orbitron","IBM Plex Sans",sans-serif;font-size:28px;font-weight:700;line-height:1;color:#0a0e1a}
 .sum-card .l{font-size:11.5px;color:var(--muted);margin-top:7px;line-height:1.25;font-weight:500}
 .sum-card .s{font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:var(--ac,var(--accent));margin-top:5px;letter-spacing:.01em}
 .sum-glyphcards .sum-card{min-height:96px}
 .sum-tablewrap{overflow-x:auto;border:1px solid var(--hair);border-radius:11px}
-.sum-table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:860px}
-.sum-table th,.sum-table td{padding:10px 11px;text-align:right;border-bottom:1px solid var(--hair2);white-space:nowrap}
-.sum-table thead th{font-family:"IBM Plex Mono",monospace;font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);font-weight:600;background:#f7f9fa;position:sticky;top:0}
+.sum-table{width:100%;border-collapse:collapse;font-size:13px;min-width:860px}
+.sum-table th,.sum-table td{padding:11px 12px;text-align:center;border-bottom:1px solid var(--hair2);white-space:nowrap}
+.sum-table thead th{font-family:"IBM Plex Mono",monospace;font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:#334155;font-weight:700;background:#f1f5f9;position:sticky;top:0}
 .sum-table th:first-child,.sum-table td:first-child{text-align:left}
 .sum-table tbody tr:nth-child(even){background:#fafbfc}
 .sum-table tbody tr:last-child td{border-bottom:none}
 .sum-table tbody tr:hover{background:#eef6f5}
-.sum-table .num{font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink)}
+.sum-table .num{font-variant-numeric:tabular-nums;font-weight:700;color:#0a0e1a;font-size:14px;font-family:"Orbitron","IBM Plex Mono",monospace}
 .sum-cat{display:inline-flex;align-items:center;gap:9px;font-weight:600}
 .sum-cat .dot{width:10px;height:10px;border-radius:50%;flex:none}
 .sum-table td.dash{color:#cdd2d9;font-weight:400}
-.sum-table td .pct{display:block;color:var(--faint);font-family:"IBM Plex Mono",monospace;font-size:9px;font-weight:400;margin-top:2px}
+.sum-table td .pct{display:block;color:#64748b;font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:500;margin-top:2px}
 .sum-foot{font-size:11px;color:var(--muted);margin-top:12px;line-height:1.5}
 /* Mini bar in block table */
 .mini-bar{height:3px;background:var(--hair2);border-radius:2px;margin-top:3px;width:54px}
 .mini-bar span{display:block;height:100%;background:var(--accent);border-radius:2px}
 /* Build-stage bar chart */
-.sc-chart{display:flex;flex-direction:column;gap:9px;padding:4px 0}
-.sc-row{display:flex;align-items:center;gap:10px}
+.sc-chart{display:flex;flex-direction:column;gap:13px;padding:4px 0}
+.sc-row{display:grid;grid-template-columns:140px 1fr 110px;align-items:center;gap:12px}
 .sc-label{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--muted);width:70px;flex:none}
 .sc-track{flex:1;height:10px;background:var(--hair2);border-radius:6px;overflow:hidden}
 .sc-fill{height:100%;border-radius:6px;transition:width .5s ease}
@@ -614,6 +614,7 @@ var STAGE_LABEL = {noc:"NOC received", agreement:"Agreement signed", shed:"Shed 
 var RVM_BUILD   = ["shed","civil","electrical","machine","cctv"];
 var TYPE_COLOR  = {Panchayat:"#0d9488", Municipality:"#6366f1", CCP:"#f59e0b", Public:"#0ea5e9", Private:"#ec4899"};
 var TYPE_ORDER  = ["Panchayat","Municipality","CCP","Public","Private"];
+var ENTITY_TYPES = ["Panchayat","Municipality","CCP"]; // core entities; Public/Private excluded from counts
 
 var BLOCK2TAL = {tiswadi:"Tiswadi",bardez:"Bardez",salcete:"Salcete",pernem:"Pernem",dharbandora:"Dharbandora",
   mormugao:"Mormugao",cancona:"Canacona",canacona:"Canacona",ponda:"Ponda",bicholim:"Bicholim",
@@ -692,7 +693,7 @@ function purposes(){ var s={}; UNITS.forEach(function(u){ s[u.purpose]=1; }); va
 function authStat(key, type){   // key: noc|agreement ; type optional filter
   var applies=0, yes=0;
   AUTH.forEach(function(a){
-    if(type && a.type!==type) return;
+    if(type){ if(a.type!==type) return; } else { if(ENTITY_TYPES.indexOf(a.type)<0) return; }
     if(key==="noc"){ if(!nocApplies(a)) return; applies++; if(a.noc) yes++; }
     else { applies++; if(a.agreement) yes++; }
   });
@@ -788,14 +789,16 @@ var viewMode    = "coverage";    // "coverage" | "deployment" | "collection"
 var authStage   = "noc";          // shaded stage in authority view (noc|agreement)
 var purposeFilter = "all";        // all | RVM | RC  (units view)
 var unitStageOn = {}; ["awaiting","shed","civil","electrical","machine","cctv"].forEach(function(k){ unitStageOn[k]=true; });
-var depToggleOn = false; // persists across renderStageLayers re-renders
+var depToggleOn = true;  // stage filter shown by default (expanded)
 var unitsCov = {noc:false, agreement:false};   // Collection Points: shade polygons like coverage when on
 var locTypeOn = {RVM:true, RC:false, CPC:false}; // which collection-point types to plot
 var collOverlay = {blockNames:false, noc:false, agreement:false, machine:false}; // label overlays in collection view
 var collTypeFilter = {Panchayat:true, Municipality:true, CCP:true, Public:true, Private:true}; // type filter for collection pins
 var labelGroup = L.layerGroup(); // transparent block labels
 var baseOn      = {panchayats:true, municipals:true, talukas:true, districts:false};
-var autoTimer=null, autoUrl=null;
+var autoTimer=null;
+// Default sheet — loads automatically for all visitors (GitHub Pages)
+var autoUrl="https://docs.google.com/spreadsheets/d/1LajD7B6XeML-UhpzSssiG1j3vcCTlqcR6YN6C-PDhVA/edit";
 
 /* ===================== Map: taluka blocks ===================== */
 var talLayerByName={};
@@ -1284,7 +1287,7 @@ function renderDashboard(){
   // per-type breakdown: only on Coverage tab
   if(viewMode==="coverage"){
     html+='<div class="typewrap">';
-    authTypes().forEach(function(t){
+    ENTITY_TYPES.forEach(function(t){  // only Panchayat/Municipality/CCP
       var n=authStat("noc",t), a=authStat("agreement",t);
       var nocTxt = n.total? (n.covered+"/"+n.total) : "N/A";
       html+='<div class="typerow"><span class="tdot" style="background:'+(TYPE_COLOR[t]||"#888")+'"></span>'+
@@ -1336,10 +1339,10 @@ function renderStageLayers(){
     var h2=document.createElement("div"); h2.className="grp-label"; h2.style.marginTop="10px";
     h2.style.cursor="pointer"; h2.style.userSelect="none";
     h2.style.display="flex"; h2.style.alignItems="center"; h2.style.justifyContent="space-between";
-    var h2span=document.createElement("span"); h2span.textContent="Show build-stage filters"; h2.appendChild(h2span);
-    var h2arr=document.createElement("span"); h2arr.textContent="▸"; h2arr.style.fontSize="10px"; h2.appendChild(h2arr);
+    var h2span=document.createElement("span"); h2span.textContent="Hide build-stage filters"; h2.appendChild(h2span);
+    var h2arr=document.createElement("span"); h2arr.textContent="▾"; h2arr.style.fontSize="10px"; h2.appendChild(h2arr);
     el.appendChild(h2);
-    var stageWrap=document.createElement("div"); stageWrap.style.display="none"; el.appendChild(stageWrap);
+    var stageWrap=document.createElement("div"); stageWrap.style.display=""; el.appendChild(stageWrap);
     h2.addEventListener("click",function(){
       depToggleOn=!depToggleOn; stageWrap.style.display=depToggleOn?"":"none";
       h2arr.textContent=depToggleOn?"▾":"▸";
@@ -1380,7 +1383,7 @@ function renderBaseLayers(){
 }
 
 function renderKpis(){
-  var totalEntities = AUTH.length;
+  var totalEntities = AUTH.filter(function(a){return ENTITY_TYPES.indexOf(a.type)>=0;}).length;
   var totalUnits    = UNITS.length;
   var noc=authStat("noc"), agr=authStat("agreement");
   var nocA=authAreaStat("noc"), agrA=authAreaStat("agreement");
@@ -1448,7 +1451,8 @@ function renderBodies(){
 
 /* ===================== Executive Summary view ===================== */
 function summaryFor(types){
-  var A = AUTH.filter(function(a){ return !types || types.indexOf(a.type)>=0; });
+  var filterTypes = types || ENTITY_TYPES; // default: Panchayat+Municipality+CCP only
+  var A = AUTH.filter(function(a){ return filterTypes.indexOf(a.type)>=0; });
   var keyset={}; A.forEach(function(a){ keyset[normName(a.name)]=1; });
   var U = UNITS.filter(function(u){ return keyset[normName(u.authority)]; });
   var blocks={}, loc=0,mail=0,noc=0,agr=0,plan=0,planNoc=0,planAgr=0;
@@ -1456,8 +1460,8 @@ function summaryFor(types){
     if(a.taluka) blocks[a.taluka]=1;
     if(a.locationFinalised) loc++;
     if(a.mailSent) mail++;
-    if(nocApplies(a)&&a.noc) noc++;
-    if(a.agreement) agr++;
+    if(nocApplies(a)&&a.noc===true) noc++;  // blank=null→not counted
+    if(a.agreement===true) agr++;             // blank=null→not counted
     plan+=(a.plannedCPs||0); planNoc+=(a.plannedCPsNoc||0); planAgr+=(a.plannedCPsAgr||0);
   });
   return {blocks:Object.keys(blocks).length, bodies:A.length, loc:loc, mail:mail, noc:noc, agr:agr,
@@ -1539,7 +1543,6 @@ function renderSummary(){
       card(nf(ov.noc),"Total NOC",nf(ov.noc)+" of "+nf(ov.bodies)+" bodies \u00b7 "+pct(ov.noc,ov.bodies)+"%",T.noc),
       card(nf(ov.agr),"Total agreement",nf(ov.agr)+" of "+nf(ov.bodies)+" bodies \u00b7 "+pct(ov.agr,ov.bodies)+"%",T.agreement),
       card(nf(ov.plan),"Total plan CPs","planned across "+nf(ov.bodies)+" bodies","#64748b"),
-      card(nf(ov.actual),"Actual CPs",nf(ov.actual)+" of "+nf(ov.plan)+" planned \u00b7 "+pct(ov.actual,ov.plan)+"%","#16a34a"),
       card(nf(ov.cpNoc),"CPs as per NOC",nf(ov.cpNoc)+" of "+nf(ov.plan)+" planned CPs \u00b7 "+ov.cpNocPct+"%",T.noc),
       card(nf(ov.cpAgr),"CPs as per agreement",nf(ov.cpAgr)+" of "+nf(ov.plan)+" planned CPs \u00b7 "+ov.cpAgrPct+"%",T.agreement),
       card(nf(ov.machine),"Machine deployed",nf(ov.machine)+" of "+nf(ov.actual)+" CPs \u00b7 "+pct(ov.machine,ov.actual)+"%","#15803d")
@@ -1563,8 +1566,7 @@ function renderSummary(){
         '<td class="num">'+nf(d.agr)+'</td><td class="num">'+nf(d.plan)+'</td><td class="num">'+nf(d.actual)+'</td>'+
         DASH+ratioCell(d.cpAgr,d.plan,d.cpAgrPct)+'<td class="num">'+nf(d.machine)+'</td></tr>';
     }
-    var body="<tbody>"+full("Panchayats",TYPE_COLOR.Panchayat,P)+full("ULBs (Municipal + CCP)",TYPE_COLOR.Municipality,U)+
-      lite("Public",TYPE_COLOR.Public,PUB)+lite("Private",TYPE_COLOR.Private,PRI)+"</tbody>";
+    var body="<tbody>"+full("Panchayats",TYPE_COLOR.Panchayat,P)+full("ULBs (Municipal + CCP)",TYPE_COLOR.Municipality,U)+"</tbody>";
     var net=card(nf(UNITS.length),"Total RVMs","reverse vending machines","#16a34a")+
             card(nf(RC_UNITS.length),"Return centres","RC drop-off points","#ec4899")+
             card(nf(CPC_UNITS.length),"CPCs / warehouses","collection & processing","#b45309")+
@@ -1638,7 +1640,7 @@ function renderSummary(){
     +'<div class="sv-kpi-cell">'+svgDonut(nocPct,T.noc,34)+'<div class="sv-kpi-v">'+ov.noc+' / '+ov.bodies+'</div><div class="sv-kpi-l">NOC received</div></div>'
     +'<div class="sv-kpi-cell">'+svgDonut(agrPct,T.agreement,34)+'<div class="sv-kpi-v">'+ov.agr+' / '+ov.bodies+'</div><div class="sv-kpi-l">Agreement signed</div></div>'
     +'<div class="sv-kpi-cell">'+svgDonut(macPct,T.machine,34)+'<div class="sv-kpi-v">'+ov.machine+' / '+UNITS.length+'</div><div class="sv-kpi-l">Machine installed</div></div>'
-    +'<div class="sv-kpi-cell">'+svgDonut(pct(ov.actual,ov.plan),"#6366f1",34)+'<div class="sv-kpi-v">'+ov.actual+' / '+ov.plan+'</div><div class="sv-kpi-l">CPs deployed</div></div>'
+
     +'</div>';
   var stageHTML=['shed','civil','electrical','cctv','machine'].map(function(k){
     var cnt=UNITS.filter(function(u){return !!u[k];}).length;
@@ -1660,7 +1662,7 @@ function renderSummary(){
       +(U5.length?('<div style="font-family:IBM Plex Mono,monospace;font-size:9px;color:#94a3b8;margin-top:3px">'+mA+'/'+U5.length+' machines</div>'):"")
       +'</div></div>';
   }).join("");
-  var typeHTML=["Panchayat","Municipality","CCP","Public","Private"].map(function(t){
+  var typeHTML=["Panchayat","Municipality","CCP"].map(function(t){  // Public/Private excluded from entity view
     var A2=AUTH.filter(function(a){return a.type===t;}); if(!A2.length) return "";
     var n2=A2.filter(function(a){return nocApplies(a)&&a.noc===true;}).length;
     var a2=A2.filter(function(a){return a.agreement;}).length;
@@ -1901,7 +1903,7 @@ function applyCombinedSheet(rows){
     var tal = normTaluka(gv(row,cTal)); if(!tal){ var bc=bodyCentroid(nm); if(bc) tal=bc.taluka; }
     var nocVal = (type==="Private") ? null : (cNoc!=null ? (isNA(gv(row,cNoc))?false:truthy(gv(row,cNoc))) : null);
     var agrVal = cAgr!=null && truthy(gv(row,cAgr));
-    if(agrVal && nocVal===false) nocVal=true;            // agreement implies NOC where NOC applies
+    // NOC and Agreement counted independently
     var a=amap[key];
     var locV=cLoc!=null&&truthy(gv(row,cLoc)), mailV=cMail!=null&&truthy(gv(row,cMail)), planV=cPlan!=null?(parseInt(gv(row,cPlan),10)||0):null;
     if(!a){ a={name:nm,type:type,taluka:tal||"",noc:nocVal,agreement:agrVal,locationFinalised:locV,mailSent:mailV,plannedCPs:(planV!=null?planV:0),lat:NaN,lng:NaN}; amap[key]=a; aorder.push(key); }
@@ -1948,7 +1950,7 @@ function applyAuthSheet(rows){
     var noc = (type==="Private" || isNA(nocRaw)) ? (type==="Private"? null : (cNoc!=null? truthy(nocRaw): null)) : truthy(nocRaw);
     if(type==="Private") noc=null;
     var agr = cAgr!=null && truthy(gv(row,cAgr));
-    if(agr && noc===false) noc=true; // agreement implies NOC where NOC applies
+    // NOC and Agreement are independent — no promotion
     var pc2=bodyCentroid(nm);
     var locF=cLoc!=null?truthy(gv(row,cLoc)):(noc===true||agr);
     var mailS=cMail!=null?truthy(gv(row,cMail)):(noc===true||agr);
@@ -2179,7 +2181,17 @@ wireCollapsers();
   var u=lsGet(KEY_SHEET);
   var inp=document.getElementById("sheetUrl"); if(inp) inp.value=u;
   if(u){ statusEl.innerHTML="Restoring saved sheet\u2026"; loadSheetUrl(u,function(ok){ renderAll(); if(!ok) statusEl.innerHTML="Saved sheet couldn\u2019t be reached \u2014 showing <b>sample data</b>."; }); }
-  else { renderAll(); statusEl.innerHTML='Showing <b>sample data</b> ('+AUTH.length+' authorities \u00b7 '+UNITS.length+' units). Unlock Data Source to load your sheet.'; }
+  else {
+    // No saved sheet — auto-load the default live sheet for all visitors
+    var defaultSheet="https://docs.google.com/spreadsheets/d/1LajD7B6XeML-UhpzSssiG1j3vcCTlqcR6YN6C-PDhVA/edit";
+    lsSet(KEY_SHEET, defaultSheet);
+    var inp2=document.getElementById("sheetUrl"); if(inp2) inp2.value=defaultSheet;
+    statusEl.innerHTML="Loading live data\u2026";
+    loadSheetUrl(defaultSheet, function(ok){
+      renderAll();
+      statusEl.innerHTML=ok?"Live data loaded \u00b7 auto-refresh every 30s":"Sheet unreachable \u2014 showing sample data.";
+    });
+  }
 })();
 setTimeout(function(){ map.invalidateSize(); },250);
 window.addEventListener("resize",function(){ map.invalidateSize(); });
