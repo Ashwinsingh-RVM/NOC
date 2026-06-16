@@ -415,6 +415,7 @@ h1.title{font-family:"Orbitron",sans-serif;font-weight:700;font-size:18px;letter
 .sv-kpi-cell{display:flex;flex-direction:column;align-items:center;gap:5px}
 .sv-kpi-v{font-family:"Orbitron","IBM Plex Sans",sans-serif;font-size:13px;font-weight:700;color:var(--ink);text-align:center}
 .sv-kpi-l{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--muted);text-align:center;letter-spacing:.03em}
+.sv-kpi-bignum{font-family:"Orbitron","IBM Plex Sans",sans-serif;font-size:36px;font-weight:700;line-height:1;text-align:center}
 .sv-stage-grid{display:flex;flex-direction:column;gap:10px;padding:2px 0}
 .sv-stage-row{display:grid;grid-template-columns:10px 110px 1fr;align-items:center;gap:10px}
 .sv-stage-dot{width:10px;height:10px;border-radius:50%;flex:none}
@@ -792,7 +793,7 @@ var unitStageOn = {}; ["awaiting","shed","civil","electrical","machine","cctv"].
 var depToggleOn = true;  // stage filter shown by default (expanded)
 var unitsCov = {noc:false, agreement:false};   // Collection Points: shade polygons like coverage when on
 var locTypeOn = {RVM:true, RC:false, CPC:false}; // which collection-point types to plot
-var collOverlay = {blockNames:false, noc:false, agreement:false, machine:false}; // label overlays in collection view
+var collOverlay = {blockNames:false, noc:false, agreement:false, machine:false, machVsAgr:false, machVsPlan:false}; // label overlays in collection view
 var collTypeFilter = {Panchayat:true, Municipality:true, CCP:true, Public:true, Private:true}; // type filter for collection pins
 var labelGroup = L.layerGroup(); // transparent block labels
 var baseOn      = {panchayats:true, municipals:true, talukas:true, districts:false};
@@ -978,38 +979,33 @@ var labelGroup=L.layerGroup();
 function rebuildLabels(){
   labelGroup.clearLayers();
   if(viewMode!=="collection") return;
-  var anyOverlay=collOverlay.blockNames||collOverlay.noc||collOverlay.agreement||collOverlay.machine;
+  var anyOverlay=collOverlay.blockNames||collOverlay.noc||collOverlay.agreement
+    ||collOverlay.machine||collOverlay.machVsAgr||collOverlay.machVsPlan;
   TALUKA_GEO.features.forEach(function(f){
     var lyr=talLayerByName[f.properties.name]; if(!lyr) return;
     lyr.setStyle(talBaseStyle(f.properties.name));
   });
   if(!anyOverlay) return;
-  // Per-block custom anchors (lat/lng offsets) and rotation angles
-  // Adjusted to keep labels inside their geo
-  var CUSTOM = {
-    "Sattari":     {dlat: 0.00, dlng: 0.00, rot: -8},
-    "Sanguem":     {dlat:-0.04, dlng: 0.00, rot:  0},
-    "Dharbandora": {dlat: 0.04, dlng:-0.02, rot:  0},
-    "Quepem":      {dlat: 0.00, dlng: 0.00, rot:  0},
-    "Canacona":    {dlat:-0.02, dlng: 0.00, rot:  0},
-    "Ponda":       {dlat: 0.00, dlng: 0.00, rot:  0},
-    "Mormugao":    {dlat: 0.00, dlng:-0.01, rot:  0},
-    "Tiswadi":     {dlat: 0.00, dlng: 0.00, rot:  0}
+  var CUSTOM={
+    "Sattari":{dlat:0.00,dlng:0.00,rot:-8},"Sanguem":{dlat:-0.04,dlng:0.00,rot:0},
+    "Dharbandora":{dlat:0.04,dlng:-0.02,rot:0},"Quepem":{dlat:0.00,dlng:0.00,rot:0},
+    "Canacona":{dlat:-0.02,dlng:0.00,rot:0},"Ponda":{dlat:0.00,dlng:0.00,rot:0},
+    "Mormugao":{dlat:0.00,dlng:-0.01,rot:0},"Tiswadi":{dlat:0.00,dlng:0.00,rot:0}
   };
   TALUKA_GEO.features.forEach(function(f){
     var tal=f.properties.name;
     var baseLat=f.properties.lat, baseLng=f.properties.lng;
     if(!isFinite(baseLat)||!isFinite(baseLng)) return;
     var adj=CUSTOM[tal]||{dlat:0,dlng:0,rot:0};
-    var lat=baseLat+(adj.dlat||0), lng=baseLng+(adj.dlng||0);
-    var rot=adj.rot||0;
+    var lat=baseLat+(adj.dlat||0), lng=baseLng+(adj.dlng||0), rot=adj.rot||0;
     var lyr=talLayerByName[tal];
     var talCol=TAL_COLORS[tal]||"#888888";
-    // Aggregates
+    // Per-taluka aggregates
     var asInBlock=AUTH.filter(function(a){return a.taluka===tal;});
     var totalA=asInBlock.length;
     var nocA=asInBlock.filter(function(a){return nocApplies(a)&&a.noc===true;}).length;
-    var agrA=asInBlock.filter(function(a){return a.agreement;}).length;
+    var agrA=asInBlock.filter(function(a){return a.agreement===true;}).length;
+    var planA=asInBlock.reduce(function(t,a){return t+(a.plannedCPs||0);},0);
     var U4=UNITS.filter(function(u){var a=authOf(u.authority);return a&&a.taluka===tal;});
     var macA=U4.filter(function(u){return u.machine;}).length;
     // Pixel bbox
@@ -1022,94 +1018,75 @@ function rebuildLabels(){
     }catch(e){}
     pxW=Math.max(48,pxW); pxH=Math.max(32,pxH);
     var useW=Math.round(pxW*0.72), useH=Math.round(pxH*0.72);
-    // Active metric
+    // Determine active metric for polygon fill + label
     var metric=null;
-    if(collOverlay.noc&&totalA) metric={pct:Math.round(nocA/totalA*100),n:nocA,d:totalA,label:"NOC"};
-    else if(collOverlay.agreement&&totalA) metric={pct:Math.round(agrA/totalA*100),n:agrA,d:totalA,label:"Agr"};
-    else if(collOverlay.machine&&U4.length) metric={pct:Math.round(macA/U4.length*100),n:macA,d:U4.length,label:"Mach"};
-    // Fill polygon with block's own color
-    if(lyr&&metric){
+    if(collOverlay.noc&&totalA)
+      metric={pct:Math.round(nocA/totalA*100),n:nocA,d:totalA,label:"NOC",col:STAGE_COLOR.noc,mode:"pct"};
+    else if(collOverlay.agreement&&totalA)
+      metric={pct:Math.round(agrA/totalA*100),n:agrA,d:totalA,label:"Agr",col:STAGE_COLOR.agreement,mode:"pct"};
+    else if(collOverlay.machVsAgr&&agrA>0)
+      metric={pct:Math.round(macA/agrA*100),n:macA,d:agrA,label:"vs Agr",col:STAGE_COLOR.machine,mode:"pct"};
+    else if(collOverlay.machVsPlan&&planA>0)
+      metric={pct:Math.round(macA/planA*100),n:macA,d:planA,label:"vs Plan",col:STAGE_COLOR.machine,mode:"pct"};
+    else if(collOverlay.machine)
+      metric={n:macA,d:planA||U4.length,label:"Plan CPs:",col:STAGE_COLOR.machine,mode:"count"};
+    // Fill polygon
+    if(lyr&&metric&&metric.mode==="pct"){
       lyr.setStyle({fillColor:talCol,fillOpacity:Math.max(0.13,metric.pct/100*0.78),color:talCol,weight:2,opacity:0.92});
+    } else if(lyr&&metric&&metric.mode==="count"){
+      lyr.setStyle({fillColor:talCol,fillOpacity:Math.max(0.15,macA/Math.max(1,planA||U4.length)*0.78),color:talCol,weight:2,opacity:0.92});
     } else if(lyr&&collOverlay.blockNames){
       lyr.setStyle({fillColor:talCol,fillOpacity:0.22,color:talCol,weight:2,opacity:0.92});
     }
-    // ── Text colours: dark ink so always readable regardless of polygon fill ──
-    // Name: very dark version of the block color (darken + near-black mix)
-    var darkInk="#1a1f2e";   // near-black for numbers — maximum contrast
-    var nameInk="#1a2332";   // very dark blue-grey for name
-    // % color: deep dark version of the block color for visual identity without blending in
-    var pctInk=darkInk;      // solid dark so it pops over any fill
-
-    // Font sizes relative to usable area
+    var darkInk="#1a1f2e", nameInk="#1a2332";
     var nfs=Math.min(Math.round(useW/(tal.length*0.58)),Math.round(useH*0.38),50);
     nfs=Math.max(nfs,10);
     var pfs=Math.min(Math.round(useH*0.48),Math.round(useW*0.36),62);
     pfs=Math.max(pfs,16);
     var sfs=Math.max(Math.round(pfs*0.32),9);
-    // Rotation transform
-    var rotStyle=rot?"transform:rotate("+rot+"deg);":""
-    // Build parts
+    var rotStyle=rot?"transform:rotate("+rot+"deg);":"";
     var parts=[];
-    if(collOverlay.blockNames && !metric){
-      parts.push(
-        '<div style="font-family:\'IBM Plex Sans\',sans-serif;font-size:'+nfs+'px;font-weight:900;'+
-        'color:'+nameInk+';opacity:0.82;line-height:1.05;letter-spacing:.02em;'+
-        'text-transform:uppercase;white-space:nowrap;text-align:center;'+
-        'text-shadow:0 1px 0 rgba(255,255,255,.9);">'+tal+'</div>'
-      );
-    } else if(metric && !collOverlay.blockNames){
-      parts.push(
-        '<div style="font-family:\'Orbitron\',\'IBM Plex Sans\',sans-serif;font-size:'+pfs+'px;font-weight:900;'+
-        'color:'+pctInk+';opacity:0.92;line-height:1;letter-spacing:-.01em;'+
-        'text-shadow:0 1px 0 rgba(255,255,255,.85);">'+
-        metric.pct+'<span style="font-size:'+Math.round(pfs*.52)+'px;vertical-align:super">%</span></div>'
-      );
-      parts.push(
-        '<div style="font-family:\'IBM Plex Mono\',monospace;font-size:'+sfs+'px;font-weight:700;'+
-        'color:'+darkInk+';opacity:0.78;letter-spacing:.04em;margin-top:2px;'+
-        'text-shadow:0 1px 0 rgba(255,255,255,.7);">'+metric.label+' '+metric.n+'/'+metric.d+'</div>'
-      );
-    } else if(metric && collOverlay.blockNames){
-      var nfs2=Math.min(Math.round(useW/(tal.length*0.68)),Math.round(useH*0.20),20);
-      nfs2=Math.max(nfs2,8);
-      var pfs2=Math.min(Math.round(useH*0.38),Math.round(useW*0.30),52);
-      pfs2=Math.max(pfs2,14);
-      var sfs2=Math.max(Math.round(pfs2*0.30),8);
-      parts.push(
-        '<div style="font-family:\'IBM Plex Sans\',sans-serif;font-size:'+nfs2+'px;font-weight:800;'+
-        'color:'+nameInk+';opacity:0.65;line-height:1;text-transform:uppercase;letter-spacing:.04em;'+
-        'white-space:nowrap;text-shadow:0 1px 0 rgba(255,255,255,.8);">'+tal+'</div>'
-      );
-      parts.push(
-        '<div style="font-family:\'Orbitron\',\'IBM Plex Sans\',sans-serif;font-size:'+pfs2+'px;font-weight:900;'+
-        'color:'+pctInk+';opacity:0.90;line-height:1;letter-spacing:-.01em;margin-top:2px;'+
-        'text-shadow:0 1px 0 rgba(255,255,255,.85);">'+
-        metric.pct+'<span style="font-size:'+Math.round(pfs2*.50)+'px;vertical-align:super">%</span></div>'
-      );
-      parts.push(
-        '<div style="font-family:\'IBM Plex Mono\',monospace;font-size:'+sfs2+'px;font-weight:700;'+
-        'color:'+darkInk+';opacity:0.72;letter-spacing:.04em;margin-top:1px;'+
-        'text-shadow:0 1px 0 rgba(255,255,255,.7);">'+metric.label+' '+metric.n+'/'+metric.d+'</div>'
-      );
+    // Block name (small, above number if both selected)
+    if(collOverlay.blockNames){
+      var nfsN=metric?Math.min(Math.round(useW/(tal.length*0.68)),Math.round(useH*0.20),20):nfs;
+      nfsN=Math.max(nfsN,8);
+      parts.push('<div style="font-family:\'IBM Plex Sans\',sans-serif;font-size:'+nfsN+'px;font-weight:900;'
+        +'color:'+nameInk+';opacity:'+(metric?0.65:0.82)+';line-height:1;text-transform:uppercase;'
+        +'letter-spacing:.02em;white-space:nowrap;text-shadow:0 1px 0 rgba(255,255,255,.9);">'+tal+'</div>');
+    }
+    // Metric display
+    if(metric){
+      if(metric.mode==="count"){
+        // Machine count as BIG hero, planned CPs below
+        parts.push('<div style="font-family:\'Orbitron\',\'IBM Plex Sans\',sans-serif;font-size:'+pfs+'px;font-weight:900;'
+          +'color:'+darkInk+';opacity:0.92;line-height:1;letter-spacing:-.01em;'
+          +'text-shadow:0 1px 0 rgba(255,255,255,.85);">'+metric.n+'</div>');
+        parts.push('<div style="font-family:\'IBM Plex Mono\',monospace;font-size:'+sfs+'px;font-weight:700;'
+          +'color:'+darkInk+';opacity:0.72;letter-spacing:.04em;margin-top:2px;'
+          +'text-shadow:0 1px 0 rgba(255,255,255,.7);">'+metric.label+' '+metric.d+'</div>');
+      } else {
+        // % as BIG hero, n/d + label below
+        parts.push('<div style="font-family:\'Orbitron\',\'IBM Plex Sans\',sans-serif;font-size:'+pfs+'px;font-weight:900;'
+          +'color:'+darkInk+';opacity:0.92;line-height:1;letter-spacing:-.01em;'
+          +'text-shadow:0 1px 0 rgba(255,255,255,.85);">'
+          +metric.pct+'<span style="font-size:'+Math.round(pfs*.52)+'px;vertical-align:super">%</span></div>');
+        parts.push('<div style="font-family:\'IBM Plex Mono\',monospace;font-size:'+sfs+'px;font-weight:700;'
+          +'color:'+darkInk+';opacity:0.78;letter-spacing:.04em;margin-top:2px;'
+          +'text-shadow:0 1px 0 rgba(255,255,255,.7);">'+metric.label+' '+metric.n+'/'+metric.d+'</div>');
+      }
     }
     if(!parts.length) return;
-    var html=(
-      '<div style="width:'+useW+'px;'+rotStyle+
-      'display:flex;flex-direction:column;align-items:center;'+
-      'justify-content:center;pointer-events:none;text-align:center;">'+
-      parts.join("")+'</div>'
-    );
-    var icon=L.divIcon({className:"",html:html,
-      iconSize:[useW,useH],
-      iconAnchor:[Math.round(useW/2),Math.round(useH/2)]});
+    var html=('<div style="width:'+useW+'px;'+rotStyle
+      +'display:flex;flex-direction:column;align-items:center;'
+      +'justify-content:center;pointer-events:none;text-align:center;">'
+      +parts.join("")+'</div>');
+    var icon=L.divIcon({className:"",html:html,iconSize:[useW,useH],iconAnchor:[Math.round(useW/2),Math.round(useH/2)]});
     L.marker([lat,lng],{icon:icon,interactive:false}).addTo(labelGroup);
   });
-  // Ensure pins still show when overlays are active
-  // Re-add pinGroup last so it renders above polygon layers
   if(map.hasLayer(pinGroup)){ map.removeLayer(pinGroup); map.addLayer(pinGroup); }
-  // Re-add labelGroup last so it renders above polygon layers
   if(map.hasLayer(labelGroup)){ map.removeLayer(labelGroup); map.addLayer(labelGroup); }
 }
+
 var PIPE_STAGES=["noc","agreement","shed","civil","electrical","machine","cctv"];
 function unitFurthest(u){
   var idx=-1; for(var i=0;i<RVM_BUILD.length;i++){ if(u[RVM_BUILD[i]]) idx=i; }
@@ -1233,7 +1210,7 @@ function applyView(){
   if(typeof renderMapLegend==="function") renderMapLegend();
   if(typeof renderMapStats==="function") renderMapStats();
 }
-function setViewMode(m){ viewMode=m; if(m==="coverage"&&!authStage) authStage="noc"; applyView(); rebuildPins(); renderAll(); renderMapStats(); }
+function setViewMode(m){ viewMode=m; if(m==="coverage"&&!authStage) authStage="noc"; applyView(); rebuildPins(); renderAll(); if(m==="collection"){ var ms=document.getElementById("mapStats"); if(ms) ms.style.display="none"; } else { renderMapStats(); } }
 // Rebuild block labels after zoom so pixel-bbox sizes are correct
 map.on("zoomend moveend", function(){ if(viewMode==="collection") rebuildLabels(); });
 
@@ -1550,7 +1527,10 @@ function renderSummary(){
       card(nf(ov.plan),"Total plan CPs","planned across "+nf(ov.bodies)+" bodies","#64748b"),
       card(nf(ov.cpNoc),"CPs as per NOC",nf(ov.cpNoc)+" of "+nf(ov.plan)+" planned CPs \u00b7 "+ov.cpNocPct+"%",T.noc),
       card(nf(ov.cpAgr),"CPs as per agreement",nf(ov.cpAgr)+" of "+nf(ov.plan)+" planned CPs \u00b7 "+ov.cpAgrPct+"%",T.agreement),
-      card(nf(ov.machine),"Machine installed",""+nf(ov.machine)+" of "+nf(UNITS.length)+" RVMs total \u00b7 "+Math.round(ov.machine/Math.max(1,UNITS.length)*100)+"%","#15803d")
+      card(nf(ov.machine),"Machine installed",
+        "vs Plan: "+nf(ov.machine)+"/"+nf(ov.plan)+" \u00b7 "+Math.round(ov.machine/Math.max(1,ov.plan)*100)+"%" 
+        +" \u00b7 vs Agr: "+Math.round(ov.machine/Math.max(1,ov.agr)*100)+"%"
+      ,"#15803d")
     ].join("");
     var cols=["Category","Blocks","Bodies","Loc. final","Mail sent","NOC","Agreement","Plan CPs","Actual CPs","CPs / NOC","CPs / Agr","Machine"];
     var head="<thead><tr>"+cols.map(function(c){return "<th>"+c+"</th>";}).join("")+"</tr></thead>";
@@ -1591,18 +1571,20 @@ function renderSummary(){
               cpNocPct:0,cpAgr:A.reduce(function(t,a){return t+(a.plannedCPsAgr||0);},0),cpAgrPct:0,
               mach:Uu.filter(function(u){return u.machine;}).length};
     }
-    var bHead='<thead><tr><th>Block</th><th>Panchayats</th><th>Loc.</th><th>Mail</th><th>NOC</th><th>Agr.</th><th>Plan CPs</th><th>Actual CPs</th><th>CPs/NOC</th><th>CPs/Agr</th><th>Machine</th></tr></thead><tbody>';
+    var bHead='<thead><tr><th>Block</th><th>Bodies</th><th>NOC</th><th>Agr</th><th>Plan CPs</th><th>Actual CPs</th><th>Machine</th><th>vs Plan</th><th>vs Agr</th></tr></thead><tbody>';
     var bBody=talukaNames.map(function(tal){
       var d=sumBlock(tal); var bw=d.plan?Math.round(d.actual/d.plan*100):0;
       d.cpNocPct=d.plan?Math.round(d.cpNoc/d.plan*100):0; d.cpAgrPct=d.plan?Math.round(d.cpAgr/d.plan*100):0;
+      var mvp2=d.plan?Math.round(d.mach/d.plan*100):0;
+      var mva2=d.agr?Math.round(d.mach/d.agr*100):0;
       return '<tr><td style="font-weight:600">'+tal+'</td>'+
-        '<td class="num">'+nf(d.panch)+'</td><td class="num">'+nf(d.loc)+'</td><td class="num">'+nf(d.mail)+'</td>'+
+        '<td class="num">'+nf(d.panch)+'</td>'+
         '<td class="num">'+nf(d.noc)+'</td><td class="num">'+nf(d.agr)+'</td>'+
         '<td class="num">'+nf(d.plan)+'<div class="mini-bar"><span style="width:'+bw+'%"></span></div></td>'+
         '<td class="num">'+nf(d.actual)+'</td>'+
-        '<td class="num">'+nf(d.cpNoc)+'<span class="pct">'+d.cpNocPct+'%</span></td>'+
-        '<td class="num">'+nf(d.cpAgr)+'<span class="pct">'+d.cpAgrPct+'%</span></td>'+
-        '<td class="num">'+nf(d.mach)+'</td></tr>';
+        '<td class="num"><b>'+nf(d.mach)+'</b></td>'+
+        '<td class="num">'+mvp2+'%<span class="pct">'+d.mach+'/'+d.plan+'</span></td>'+
+        '<td class="num">'+mva2+'%<span class="pct">'+d.mach+'/'+d.agr+'</span></td></tr>';
     }).join("")+"</tbody>";
     var stages3=[["shed","Shed",T.shed],["civil","Civil work",T.civil],["electrical","Electrical",T.electrical],["cctv","CCTV",T.cctv],["machine","Machine installed",T.machine]];
     var sc=stages3.map(function(sv){
@@ -1612,24 +1594,29 @@ function renderSummary(){
         '<div class="sc-track"><div class="sc-fill" style="width:'+pv+'%;background:'+sv[2]+'"></div></div>'+
         '<span class="sc-val">'+nf(cnt)+' ('+pv+'%)</span></div>';
     }).join("");
-    var dCols=["Block","Total Panchayats","NOC","Agreement","Shed","Civil","Electrical","CCTV","Machine Installed %"];
+    var dCols=["Block","Bodies","NOC","Agreement","Planned CPs","Shed","Civil","Electrical","CCTV","Machine","vs Plan","vs Agr"];
     var dHead='<thead><tr>'+dCols.map(function(c){return '<th>'+c+'</th>';}).join('')+'</tr></thead><tbody>';
     var dBody=talukaNames.map(function(tal){
       var A=AUTH.filter(function(a){return a.taluka===tal;});
       var ks={}; A.forEach(function(a){ks[normName(a.name)]=1;});
       var Uv=UNITS.filter(function(u){return ks[normName(u.authority)];});
       var no=A.filter(function(a){return nocApplies(a)&&a.noc;}).length;
-      var ag=A.filter(function(a){return a.agreement;}).length;
+      var ag=A.filter(function(a){return a.agreement===true;}).length;
+      var pl=A.reduce(function(t,a){return t+(a.plannedCPs||0);},0);
       var sh=Uv.filter(function(u){return u.shed;}).length;
       var cv=Uv.filter(function(u){return u.civil;}).length;
       var el=Uv.filter(function(u){return u.electrical;}).length;
       var ma=Uv.filter(function(u){return u.machine;}).length;
       var ct=Uv.filter(function(u){return u.cctv;}).length;
-      var mp=Uv.length?Math.round(ma/Uv.length*100):0;
+      var mvp=pl?Math.round(ma/pl*100):0;
+      var mva=ag?Math.round(ma/ag*100):0;
       return '<tr><td style="font-weight:600">'+tal+'</td>'+
         '<td class="num">'+nf(A.length)+'</td><td class="num">'+nf(no)+'</td><td class="num">'+nf(ag)+'</td>'+
-        '<td class="num">'+nf(sh)+'</td><td class="num">'+nf(cv)+'</td><td class="num">'+nf(el)+'</td>'+
-        '<td class="num">'+nf(ct)+'</td><td class="num"><b>'+nf(ma)+'</b><span class="pct">'+mp+'%</span></td></tr>';
+        '<td class="num">'+nf(pl)+'</td>'
+        +'<td class="num">'+nf(sh)+'</td><td class="num">'+nf(cv)+'</td><td class="num">'+nf(el)+'</td>'+
+        '<td class="num">'+nf(ct)+'</td><td class="num"><b>'+nf(ma)+'</b></td>'+
+        '<td class="num">'+mvp+'%<span class="pct">'+ma+'/'+pl+'</span></td>'+
+        '<td class="num">'+mva+'%<span class="pct">'+ma+'/'+ag+'</span></td></tr>';
     }).join("")+"</tbody>";
     host.innerHTML=hero
       +'<div class="sum-section"><div class="sum-title"><span class="stag" style="background:var(--accent)"></span>Overall</div><div class="sum-cards sum-glyphcards">'+cards+'</div></div>'
@@ -1642,11 +1629,15 @@ function renderSummary(){
   }
 
   // ══ TAB 2: VISUALS (v31 charts) ══════════════════════════════════════════
-  var nocPct=pct(ov.noc,ov.bodies),agrPct=pct(ov.agr,ov.bodies),macPct=pct(ov.machine,Math.max(1,UNITS.length));
+  var nocPct=pct(ov.noc,ov.bodies),agrPct=pct(ov.agr,ov.bodies);
+  var macVsPlanPct=pct(ov.machine,ov.plan),macVsAgrPct=pct(ov.machine,ov.agr);
   var donutsHTML='<div class="sv-kpi-row">'
     +'<div class="sv-kpi-cell">'+svgDonut(nocPct,T.noc,34)+'<div class="sv-kpi-v">'+ov.noc+' / '+ov.bodies+'</div><div class="sv-kpi-l">NOC received</div></div>'
     +'<div class="sv-kpi-cell">'+svgDonut(agrPct,T.agreement,34)+'<div class="sv-kpi-v">'+ov.agr+' / '+ov.bodies+'</div><div class="sv-kpi-l">Agreement signed</div></div>'
-    +'<div class="sv-kpi-cell">'+svgDonut(macPct,T.machine,34)+'<div class="sv-kpi-v">'+ov.machine+' / '+UNITS.length+'</div><div class="sv-kpi-l">Machine installed</div></div>'
+    +'<div class="sv-kpi-cell"><div class="sv-kpi-bignum" style="color:'+T.machine+'">'+ov.machine+'</div>'
+    +'<div class="sv-kpi-v" style="font-size:11px">vs Plan '+ov.machine+'/'+ov.plan+' \u00b7 '+macVsPlanPct+'%</div>'
+    +'<div class="sv-kpi-v" style="font-size:11px">vs Agr '+ov.machine+'/'+ov.agr+' \u00b7 '+macVsAgrPct+'%</div>'
+    +'<div class="sv-kpi-l">Machine installed</div></div>'
 
     +'</div>';
   var stageHTML=['shed','civil','electrical','cctv','machine'].map(function(k){
@@ -1766,15 +1757,23 @@ function renderMapStats(){
       '<div class="ms-sub">'+UNITS.filter(function(u){return u.machine;}).length+' machines installed</div>';
     el.style.display="block"; return;
   }
-  // Collection Points view: machine installed % only
+  // Collection Points view: machine count as hero
   if(viewMode==="collection"){
     var macCt=UNITS.filter(function(u){return u.machine;}).length;
-    var macP=UNITS.length?Math.round(macCt/UNITS.length*100):0;
+    var totPlan=AUTH.reduce(function(t,a){return t+(a.plannedCPs||0);},0);
+    var totAgr=AUTH.filter(function(a){return a.agreement===true;}).length;
+    var macVsPlanPct=totPlan?Math.round(macCt/totPlan*100):0;
+    var macVsAgrPct=totAgr?Math.round(macCt/totAgr*100):0;
     el.style.borderLeftColor=STAGE_COLOR.machine;
-    el.innerHTML='<div class="ms-eyebrow">Machine installed</div>'+
-      '<div class="ms-hero" style="color:'+STAGE_COLOR.machine+'">'+macP+'<span>%</span></div>'+
-      '<div class="ms-bar"><span style="width:'+macP+'%;background:'+STAGE_COLOR.machine+'"></span></div>'+
-      '<div class="ms-sub">'+macCt+' / '+UNITS.length+' RVMs have machine installed</div>';
+    el.innerHTML='<div class="ms-eyebrow">Machine installed</div>'
+      +'<div class="ms-hero" style="color:'+STAGE_COLOR.machine+'">'+macCt+'</div>'
+      +'<div class="ms-sub" style="margin-top:6px">'
+      +'<div style="display:flex;flex-direction:column;gap:4px">'
+      +'<div><span style="color:var(--muted);font-size:9px">vs Planned CPs</span> '
+      +'<b>'+macCt+'/'+totPlan+'</b> \u00b7 <b style="color:'+STAGE_COLOR.machine+'">'+macVsPlanPct+'%</b></div>'
+      +'<div><span style="color:var(--muted);font-size:9px">vs Agreements</span> '
+      +'<b>'+macCt+'/'+totAgr+'</b> \u00b7 <b style="color:'+STAGE_COLOR.agreement+'">'+macVsAgrPct+'%</b></div>'
+      +'</div></div>';
     el.style.display="block"; return;
   }
   el.style.display="none";
@@ -1808,7 +1807,9 @@ function renderLocLayers(){
     ["blockNames","Block / panchayat names","#6366f1"],
     ["noc","NOC status per block",STAGE_COLOR.noc],
     ["agreement","Agreement per block",STAGE_COLOR.agreement],
-    ["machine","Machine installed %",STAGE_COLOR.machine]
+    ["machine","Machine installed (count)",STAGE_COLOR.machine],
+    ["machVsAgr","Machine vs Agreement",STAGE_COLOR.agreement],
+    ["machVsPlan","Machine vs Planned CPs","#6366f1"]
   ];
   overlays.forEach(function(ov){
     var ok=ov[0], on2=collOverlay[ok];
@@ -1824,6 +1825,20 @@ function renderLocLayers(){
   var note=document.createElement("div"); note.className="grp-label"; note.style.marginTop="9px";
   note.textContent="Overlays shade & label blocks on the map.";
   el.appendChild(note);
+  // Map widget toggle (machine count card)
+  var wh=document.createElement("div"); wh.className="grp-label"; wh.style.marginTop="12px"; wh.textContent="Map widget"; el.appendChild(wh);
+  var showWidget=(document.getElementById("mapStats")&&document.getElementById("mapStats").style.display!=="none");
+  var wrow=document.createElement("div"); wrow.className="layer "+(showWidget?"on":"off");
+  wrow.innerHTML='<div class="cb">'+checkSvg()+'</div><div class="swatch round" style="background:'+STAGE_COLOR.machine+'"></div><div class="lname">Machine installed widget</div>';
+  wrow.addEventListener("click",function(){
+    var ms=document.getElementById("mapStats");
+    if(!ms) return;
+    var vis=ms.style.display!=="none";
+    ms.style.display=vis?"none":"block";
+    wrow.className="layer "+(vis?"off":"on");
+    if(!vis) renderMapStats();
+  });
+  el.appendChild(wrow);
   // Ownership / type filter
   var th=document.createElement("div"); th.className="grp-label"; th.style.marginTop="12px";
   th.textContent="Ownership filter"; el.appendChild(th);
