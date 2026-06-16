@@ -1451,10 +1451,14 @@ function renderBodies(){
 
 /* ===================== Executive Summary view ===================== */
 function summaryFor(types){
-  var filterTypes = types || ENTITY_TYPES; // default: Panchayat+Municipality+CCP only
+  // Entity filtering: P+Municipality+CCP for bodies/NOC/Agr/plan
+  var filterTypes = types || ENTITY_TYPES;
   var A = AUTH.filter(function(a){ return filterTypes.indexOf(a.type)>=0; });
   var keyset={}; A.forEach(function(a){ keyset[normName(a.name)]=1; });
-  var U = UNITS.filter(function(u){ return keyset[normName(u.authority)]; });
+  var U_entity = UNITS.filter(function(u){ return keyset[normName(u.authority)]; });
+  // Machine: count across ALL units regardless of type (deployment truth)
+  var allKeySet = types ? keyset : null; // when no type filter, use ALL units
+  var U_all = types ? U_entity : UNITS;
   var blocks={}, loc=0,mail=0,noc=0,agr=0,plan=0,planNoc=0,planAgr=0;
   A.forEach(function(a){
     if(a.taluka) blocks[a.taluka]=1;
@@ -1465,7 +1469,8 @@ function summaryFor(types){
     plan+=(a.plannedCPs||0); planNoc+=(a.plannedCPsNoc||0); planAgr+=(a.plannedCPsAgr||0);
   });
   return {blocks:Object.keys(blocks).length, bodies:A.length, loc:loc, mail:mail, noc:noc, agr:agr,
-    plan:plan, actual:U.length, machine:U.filter(function(u){return u.machine;}).length,
+    plan:plan, actual:U_entity.length,
+    machine:U_all.filter(function(u){return u.machine;}).length, // ALL units
     cpNoc:planNoc, cpNocPct: plan?Math.round(planNoc/plan*100):0,
     cpAgr:planAgr, cpAgrPct: plan?Math.round(planAgr/plan*100):0};
 }
@@ -1545,7 +1550,7 @@ function renderSummary(){
       card(nf(ov.plan),"Total plan CPs","planned across "+nf(ov.bodies)+" bodies","#64748b"),
       card(nf(ov.cpNoc),"CPs as per NOC",nf(ov.cpNoc)+" of "+nf(ov.plan)+" planned CPs \u00b7 "+ov.cpNocPct+"%",T.noc),
       card(nf(ov.cpAgr),"CPs as per agreement",nf(ov.cpAgr)+" of "+nf(ov.plan)+" planned CPs \u00b7 "+ov.cpAgrPct+"%",T.agreement),
-      card(nf(ov.machine),"Machine deployed",nf(ov.machine)+" of "+nf(ov.actual)+" CPs \u00b7 "+pct(ov.machine,ov.actual)+"%","#15803d")
+      card(nf(ov.machine),"Machine installed",""+nf(ov.machine)+" of "+nf(UNITS.length)+" RVMs total \u00b7 "+Math.round(ov.machine/Math.max(1,UNITS.length)*100)+"%","#15803d")
     ].join("");
     var cols=["Category","Blocks","Bodies","Loc. final","Mail sent","NOC","Agreement","Plan CPs","Actual CPs","CPs / NOC","CPs / Agr","Machine"];
     var head="<thead><tr>"+cols.map(function(c){return "<th>"+c+"</th>";}).join("")+"</tr></thead>";
@@ -1566,7 +1571,9 @@ function renderSummary(){
         '<td class="num">'+nf(d.agr)+'</td><td class="num">'+nf(d.plan)+'</td><td class="num">'+nf(d.actual)+'</td>'+
         DASH+ratioCell(d.cpAgr,d.plan,d.cpAgrPct)+'<td class="num">'+nf(d.machine)+'</td></tr>';
     }
-    var body="<tbody>"+full("Panchayats",TYPE_COLOR.Panchayat,P)+full("ULBs (Municipal + CCP)",TYPE_COLOR.Municipality,U)+"</tbody>";
+    var PUB2=summaryFor(["Public"]), PRI2=summaryFor(["Private"]);
+    var body="<tbody>"+full("Panchayats",TYPE_COLOR.Panchayat,P)+full("ULBs (Municipal + CCP)",TYPE_COLOR.Municipality,U)+
+      lite("Public",TYPE_COLOR.Public||"#0ea5e9",PUB2)+lite("Private",TYPE_COLOR.Private||"#ec4899",PRI2)+"</tbody>";
     var net=card(nf(UNITS.length),"Total RVMs","reverse vending machines","#16a34a")+
             card(nf(RC_UNITS.length),"Return centres","RC drop-off points","#ec4899")+
             card(nf(CPC_UNITS.length),"CPCs / warehouses","collection & processing","#b45309")+
@@ -1662,7 +1669,7 @@ function renderSummary(){
       +(U5.length?('<div style="font-family:IBM Plex Mono,monospace;font-size:9px;color:#94a3b8;margin-top:3px">'+mA+'/'+U5.length+' machines</div>'):"")
       +'</div></div>';
   }).join("");
-  var typeHTML=["Panchayat","Municipality","CCP"].map(function(t){  // Public/Private excluded from entity view
+  var typeHTML=["Panchayat","Municipality","CCP","Public","Private"].map(function(t){
     var A2=AUTH.filter(function(a){return a.type===t;}); if(!A2.length) return "";
     var n2=A2.filter(function(a){return nocApplies(a)&&a.noc===true;}).length;
     var a2=A2.filter(function(a){return a.agreement;}).length;
